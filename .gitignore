@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+/OpenGL/Debug
+/Debug
+/OpenGL/x64/Debug/OpenGL.tlog
+/OpenGL/x64/Debug
+/x64/Debug
