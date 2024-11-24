@@ -1,24 +1,18 @@
 #pragma once
-
-#ifndef TERRAIN_H
-#define TERRAIN_H
-
 #include <GL/glew.h>
 #include "glm.hpp"
 #include <vector>
 #include <string>
 
-
-
-
-class Terrain {
+class Water
+{
 public:
-    Terrain(glm::vec3 localUp, int resolution, float scale);
-    ~Terrain();
+    Water(int resolution, float scale);
+    ~Water();
     void render();
     void clean();
-    
-    struct HeightMapType
+
+    struct VertexPositionMapType
     {
         float x, y, z;
         float nx, ny, nz;
@@ -26,37 +20,23 @@ public:
     };
 
 private:
- 
+
     void initialiseHeightMap();
     void setupBufferData();
     void generateBuffers();
     void bindBuffers();
     void SetupVertex(int* currentIndex, int triangle1Index);
-   
-    void calculateNormals();
-    HeightMapType* m_heightMap;
+    VertexPositionMapType* m_vertexPositionMap;
 
     int m_resolution;
     float m_scale;
 
 
-    glm::vec3 m_localUp;
-    glm::vec3 m_axisA;
-    glm::vec3 m_axisB;
-
-    std::vector<std::vector<float>> heightmap;
+    std::vector<std::vector<float>> vertexMap;
     std::vector<float> vertices;
     std::vector<long> indices;
-
-    float m_frequency = 0.05f, m_amplitude = 6.f;
-    float m_persistence = 0.5f, m_lacunarity = 0.2f;
-
-
-    int m_octaves = 5;
-
     int m_vertexCount, m_indexCount;
 
     GLuint VAO, VBO, EBO;
 };
 
-#endif

@@ -12,6 +12,7 @@
 #include "Renderer.h"
 #include "Model.h"
 #include "Planet.h"
+#include "Water.h"
 
 
 
@@ -34,8 +35,13 @@ int main()
 
     glm::mat4 view;
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);;
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0, 0, 10));
+    glm::mat4 terrainModel = glm::mat4(1.0f);
+    terrainModel = glm::translate(terrainModel, glm::vec3(0, 0, 10));
+    terrainModel = glm::scale(terrainModel, glm::vec3(5, 5, 5));
+
+    glm::mat4 waterModel = glm::mat4(1.0f);
+    waterModel = glm::translate(waterModel, glm::vec3(0, 30, 10));
+    waterModel = glm::scale(waterModel, glm::vec3(5, 5, 5));
 
 
     /* Initialize the library */
@@ -59,18 +65,21 @@ int main()
    
     glfwSetCursorPosCallback(window, mouse_callback);
   
-
-    Planet planet(64, 200);
-    planet.constructMeshes();
-
     Renderer renderer;
     Shader shader("src/shaders/vsShader.glsl", "src/shaders/fsShader.glsl");
     shader.activate();
     shader.setMatrix4("projection", projection);
 
 
-    //Model cubeModel;
-    //cubeModel.prepareModel("resources/Crate.obj", "resources/textures/cube.png");
+    Shader waterShader("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
+    waterShader.activate();
+    waterShader.setMatrix4("projection", projection);
+
+    Terrain terrain(glm::vec3(0, 1, 0), 256, 0.5f);
+    Water water(256, 0.5f);
+
+    Model monkeyModel;
+    monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/cube.png");
 
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -91,32 +100,39 @@ int main()
         camera.UpdateCameraPosition(&inputManager, deltaTime);
 
 
+  
+      
+
+
         view = glm::lookAt(camera.GetCameraPos(), camera.GetCameraPos() + camera.GetCameraFront(), camera.GetCameraUp());
+        shader.activate();
         shader.setMatrix4("view", view);
         shader.setVector3("lightPosition", light.getLightPosition());
         shader.setVector4("lightColour", light.getLightColour());
-     
-       
-      
-       
-        shader.setMatrix4("model", model);
-        planet.render();
+        shader.setMatrix4("model", terrainModel);
+        terrain.render();
+        monkeyModel.render();
 
 
-  //      float timeValue = glfwGetTime();
-  
-
+        waterShader.activate();
+        waterShader.setMatrix4("view", view);
+        waterShader.setVector3("lightPosition", light.getLightPosition());
+        waterShader.setVector4("lightColour", light.getLightColour());
+        waterShader.setMatrix4("model", waterModel);
+        glDepthMask(false); //disable z-testing
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        water.render();
+        glDepthMask(true); //disable z-testing
+        glDisable(GL_BLEND);
    
-
+        
+    
         glEnd();
-        /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
         glfwPollEvents();
     }
 
-    planet.cleanUp();
     glfwTerminate();
     return 0;
 }

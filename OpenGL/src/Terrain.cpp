@@ -47,27 +47,32 @@ void Terrain::initialiseHeightMap()
             index = (m_resolution * j) + i;
 			glm::vec2 percent = glm::vec2(j / ((float) m_resolution - 1), i / ((float) m_resolution - 1));
 			glm::vec3 pointOnUnitCube = m_localUp + (percent.x - .5f) * 2 * m_axisA + (percent.y - .5f) * 2 * m_axisB;
-			glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube) * m_scale;
+		    glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube) * m_scale;
 			
 
 			float noiseHeight = 0;
 			for (int octave = 0; octave < m_octaves; octave++) 
 			{
-				float perlinValue = pn.Evaluate(pointOnUnitSphere, m_frequency) * m_amplitude;
+
+				float perlinValue = pn.Evaluate(glm::vec3(i,j,1), m_frequency) * m_amplitude;
 			    noiseHeight += perlinValue;
 				m_amplitude *= m_persistence;
 				m_frequency *= m_lacunarity;
+	
 			}
+	
+			pointOnUnitSphere = (pointOnUnitSphere * (1 + noiseHeight));
 
 			m_amplitude = initialAmp;
 			m_frequency = initialFrequency;
-			pointOnUnitSphere = (pointOnUnitSphere * (1 + noiseHeight));
+	
+			
+	
+		
 
-
-
-			m_heightMap[index].x = pointOnUnitSphere.x;
-            m_heightMap[index].y = pointOnUnitSphere.y;
-            m_heightMap[index].z = pointOnUnitSphere.z;
+			m_heightMap[index].x = i*m_scale;
+			m_heightMap[index].y = noiseHeight;
+			m_heightMap[index].z = j*m_scale;
 
             //and use this step to calculate the texture coordinates for this point on the terrain.
             m_heightMap[index].u = (float)i * textureCoordinatesStep;

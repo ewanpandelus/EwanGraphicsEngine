@@ -35,3 +35,17 @@
 /OpenGL/x64/Debug/OpenGL.tlog
 /OpenGL/x64/Debug
 /x64/Debug
+*.mtl
+*.ipch
+*.db-wal
+*.db
+*.vsidx
+*.opendb
+*.db-shm
+.vs/OpenGL/v17/.suo
+OpenGL/OpenGL.vcxproj
+OpenGL/OpenGL.vcxproj.filters
+.vs/OpenGL/v17/DocumentLayout.json
+OpenGL/OpenGL.vcxproj
+OpenGL/OpenGL.vcxproj.filters
+*.vcxproj
