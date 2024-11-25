@@ -145,6 +145,9 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stg_image.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\water\Water.cpp" />
+    <ClCompile Include="src\water\WaterShader.cpp" />
+    <ClCompile Include="src\water\WaterFrameBuffers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\maths\PerlinNoise.h" />
@@ -158,10 +161,15 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\Terrain.h" />
+    <ClInclude Include="src\water\Water.h" />
+    <ClInclude Include="src\water\WaterShader.h" />
+    <ClInclude Include="src\water\WaterFrameBuffers.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\fsShader.glsl" />
+    <None Include="src\shaders\fsWaterShader.glsl" />
     <None Include="src\shaders\vsShader.glsl" />
+    <None Include="src\shaders\vsWaterShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

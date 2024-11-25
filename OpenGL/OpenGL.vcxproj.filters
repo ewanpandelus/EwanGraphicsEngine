@@ -45,6 +45,15 @@
     <ClCompile Include="src\maths\PerlinNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\water\Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\water\WaterFrameBuffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -80,9 +89,20 @@
     <ClInclude Include="src\maths\PerlinNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\water\Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\WaterShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\water\WaterFrameBuffers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\vsShader.glsl" />
     <None Include="src\shaders\fsShader.glsl" />
+    <None Include="src\shaders\fsWaterShader.glsl" />
+    <None Include="src\shaders\vsWaterShader.glsl" />
   </ItemGroup>
 </Project>
