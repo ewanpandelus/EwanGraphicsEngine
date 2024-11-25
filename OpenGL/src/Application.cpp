@@ -12,7 +12,8 @@
 #include "Renderer.h"
 #include "Model.h"
 #include "Planet.h"
-#include "Water.h"
+#include "water/Water.h"
+#include "water/WaterFrameBuffers.h"
 
 
 
@@ -50,6 +51,8 @@ int main()
 
     /* Create a windowed mode window and its OpenGL context */
   
+    int width, height;
+
     window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
     if (!window)
     {
@@ -82,6 +85,8 @@ int main()
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/cube.png");
 
 
+    WaterFrameBuffers fbos = WaterFrameBuffers();
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
 
@@ -91,6 +96,11 @@ int main()
             glfwSetWindowShouldClose(window, true);
 
         renderer.prepare();
+
+        fbos.bindReflectionFrameBuffer();
+
+        fbos.unbindCurrentFrameBuffer();
+
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;

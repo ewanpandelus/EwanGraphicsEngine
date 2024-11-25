@@ -1,7 +1,7 @@
 #include "Water.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "Terrain.h"
-#include "maths/PerlinNoise.h"
+#include "../Terrain.h"
+#include "../maths/PerlinNoise.h"
 #include <iostream>
 
 Water::Water( int resolution, float scale)
@@ -116,6 +116,7 @@ void Water::generateBuffers()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
+	;;// glGenFramebuffers();
 }
 
 void Water::bindBuffers() {
