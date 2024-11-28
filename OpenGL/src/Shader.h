@@ -14,11 +14,10 @@ class Shader
 {
 public:
     unsigned int ID;
-    // constructor generates the shader on the fly
-    // ------------------------------------------------------------------------
-    Shader(const char* vertexPath, const char* fragmentPath);
-   
+
     // activate the shader
+    // 
+    void initialise(const char* vertexPath, const char* fragmentPath);
     // ------------------------------------------------------------------------
     void activate();
     // utility uniform functions
@@ -35,8 +34,7 @@ public:
     void setVector4(const std::string& name, glm::vec4 value) const;
 
     void setMatrix4(const std::string& name, glm::mat4 value) const;
-
-private:
+protected:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------
     void checkCompileErrors(unsigned int shader, std::string type);

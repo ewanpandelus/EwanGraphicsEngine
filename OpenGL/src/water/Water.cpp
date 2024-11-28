@@ -4,12 +4,11 @@
 #include "../maths/PerlinNoise.h"
 #include <iostream>
 
-Water::Water( int resolution, float scale)
+Water::Water(int resolution, float scale)
 {
-
+	waterShader.initialise("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
 	m_scale = scale;
 	m_resolution = resolution;
-
 	initialiseHeightMap();
 	generateBuffers();
 	setupBufferData();

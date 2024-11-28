@@ -5,6 +5,7 @@
 
 Terrain::Terrain(glm::vec3 localUp, int resolution, float scale)
 {
+	terrainShader.initialise("src/shaders/vsShader.glsl", "src/shaders/fsShader.glsl");
 	m_localUp = localUp;
 	m_axisA =  glm::vec3(m_localUp.y, m_localUp.z, m_localUp.x);
 	m_axisB = glm::cross(m_localUp, m_axisA);
@@ -305,7 +306,6 @@ void Terrain::bindBuffers() {
 
 void Terrain::render() {
 	bindBuffers();
-   // glUseProgram(shaderProgram);
    // glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

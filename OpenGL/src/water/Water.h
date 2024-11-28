@@ -3,6 +3,7 @@
 #include "glm.hpp"
 #include <vector>
 #include <string>
+#include "../Shader.h"
 
 class Water
 {
@@ -18,6 +19,8 @@ public:
         float nx, ny, nz;
         float u, v;
     };
+
+    Shader getShader() { return waterShader;}
 
 private:
 
@@ -36,7 +39,8 @@ private:
     std::vector<float> vertices;
     std::vector<long> indices;
     int m_vertexCount, m_indexCount;
-
     GLuint VAO, VBO, EBO;
+
+    Shader waterShader{};
 };
 

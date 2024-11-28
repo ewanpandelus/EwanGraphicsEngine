@@ -12,10 +12,12 @@ in vec2 TexCoord;
 uniform vec4 tryColor; // we set this variable in the OpenGL code.
 uniform vec4 lightColour;
 
-uniform sampler2D ourTexture;
+uniform sampler2D reflectionTexture;
+uniform sampler2D refractionTexture;
 
 void main()
 {
+	vec4 reflectColour = texture(reflectionTexture, TexCoord);
 	vec4 colour = vec4(0.2, 0.2, 0.8, 1);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
@@ -29,6 +31,6 @@ void main()
 
 
 	vec2 xy = TexCoord;
-    FragColor = diffuse * colour;
+    FragColor = diffuse * colour;// * reflectColour;
 
 };

@@ -1,7 +1,6 @@
 #include "Shader.h"
 
-
- Shader::Shader(const char* vertexPath, const char* fragmentPath)
+ void Shader::initialise(const char* vertexPath, const char* fragmentPath)
  {
      // 1. retrieve the vertex/fragment source code from filePath
      std::string vertexCode;
@@ -54,6 +53,7 @@
      // delete the shaders as they're linked into our program now and no longer necessary
      glDeleteShader(vertex);
      glDeleteShader(fragment);
+     activate();
  }
 
  void Shader::activate()

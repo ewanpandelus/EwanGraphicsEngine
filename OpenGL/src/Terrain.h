@@ -7,6 +7,7 @@
 #include "glm.hpp"
 #include <vector>
 #include <string>
+#include "Shader.h"
 
 
 
@@ -24,6 +25,8 @@ public:
         float nx, ny, nz;
         float u, v;
     };
+
+    Shader getShader() const { return terrainShader; }  //Make Interface->RenderableObject?
 
 private:
  
@@ -57,6 +60,8 @@ private:
     int m_vertexCount, m_indexCount;
 
     GLuint VAO, VBO, EBO;
+
+    Shader terrainShader{};
 };
 
 #endif
