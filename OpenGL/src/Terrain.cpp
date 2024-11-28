@@ -75,8 +75,8 @@ void Terrain::initialiseHeightMap()
 			m_heightMap[index].z = j*m_scale;
 
             //and use this step to calculate the texture coordinates for this point on the terrain.
-            m_heightMap[index].u = (float)i * textureCoordinatesStep;
-            m_heightMap[index].v = (float)j * textureCoordinatesStep;
+            m_heightMap[index].u = (float)i / textureCoordinatesStep;
+            m_heightMap[index].v = (float)j / textureCoordinatesStep;
 
             m_heightMap[index].nx = 0;
             m_heightMap[index].ny = 0;

@@ -16,6 +16,7 @@ uniform sampler2D ourTexture;
 
 void main()
 {
+	vec4 texColour = texture(ourTexture, TexCoord);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
@@ -26,8 +27,9 @@ void main()
 	vec4 result = clamp(ambient+diffuse, 0, 1);
 	//FragColor = result; //vec4(norm, 1);
 
-
-	vec2 xy = TexCoord;
-    FragColor = diffuse;
+	diffuse.x = TexCoord.x;
+	diffuse.y = TexCoord.y;
+	diffuse.z = 0;
+    FragColor = diffuse; //* texColour;
 
 };

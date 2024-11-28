@@ -81,11 +81,12 @@ int main()
     Terrain terrain(glm::vec3(0, 1, 0), 256, 0.5f);
     Water water(256, 0.5f);
 
-    Model monkeyModel;
-    monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/cube.png");
+
 
 
     WaterFrameBuffers fbos = WaterFrameBuffers();
+    Model monkeyModel;
+    monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
@@ -98,7 +99,6 @@ int main()
         renderer.prepare();
 
         fbos.bindReflectionFrameBuffer();
-
         fbos.unbindCurrentFrameBuffer();
 
 
@@ -120,6 +120,7 @@ int main()
         shader.setVector3("lightPosition", light.getLightPosition());
         shader.setVector4("lightColour", light.getLightColour());
         shader.setMatrix4("model", terrainModel);
+        monkeyModel.bindTexture();
         terrain.render();
         monkeyModel.render();
 

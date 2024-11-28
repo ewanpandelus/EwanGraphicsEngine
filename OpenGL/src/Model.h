@@ -30,6 +30,8 @@ public:
 
     void loadTexture(const char* filepath);
 
+    void bindTexture();
+
     void createBuffers();
 
     void render();
@@ -38,6 +40,9 @@ public:
 
 private:
     Mesh mesh;
+    unsigned int texture;
+    unsigned char* data;
+    int width, height;
 };
 
 
