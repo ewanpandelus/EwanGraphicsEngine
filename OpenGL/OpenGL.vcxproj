@@ -166,8 +166,14 @@
     <ClInclude Include="src\water\WaterShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\fsShader.glsl" />
-    <None Include="src\shaders\vsShader.glsl" />
+    <None Include="src\shaders\fsScreen.glsl" />
+    <None Include="src\shaders\fsTerrainShader.glsl" />
+    <None Include="src\shaders\fsStandard.glsl" />
+    <None Include="src\shaders\fsWaterShader.glsl" />
+    <None Include="src\shaders\vsScreen.glsl" />
+    <None Include="src\shaders\vsTerrainShader.glsl" />
+    <None Include="src\shaders\vsStandard.glsl" />
+    <None Include="src\shaders\vsWaterShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

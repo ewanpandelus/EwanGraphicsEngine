@@ -34,13 +34,13 @@ private:
 
 	 void bindFrameBuffer(int frameBuffer, int width, int height);
 
-	 int createFrameBuffer();
+	 GLuint createFrameBuffer();
 	
-	 int createTextureAttachment(int width, int height);
+	 GLuint createTextureAttachment(int width, int height);
 
-	 int createDepthTextureAttachment(int width, int height);
+	 GLuint createDepthTextureAttachment(int width, int height);
 
-	 int createDepthBufferAttachment(int width, int height);
+	 GLuint createDepthBufferAttachment(int width, int height);
 
 	 GLuint reflectionFrameBuffer;
 	 GLuint reflectionTexture;
