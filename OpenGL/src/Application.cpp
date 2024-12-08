@@ -79,11 +79,11 @@ int main()
 
 
     std::vector<glm::vec3> treePositions;
-    treePositions.push_back(glm::vec3(25, 5, 45));
-    treePositions.push_back(glm::vec3(30, 5, 60));
-    treePositions.push_back(glm::vec3(35, 5, 40));
-    treePositions.push_back(glm::vec3(70, 5, 70));
-    treePositions.push_back(glm::vec3(60, 5, 60));
+    treePositions.push_back(glm::vec3(5, 5, 100));
+    treePositions.push_back(glm::vec3(100, 5, 5));
+    treePositions.push_back(glm::vec3(100, 5, 100));
+    treePositions.push_back(glm::vec3(50, 5, 50));
+    treePositions.push_back(glm::vec3(30, 5, 15));
 
     /* Initialize the library */
     if (!glfwInit())
@@ -135,7 +135,6 @@ int main()
     tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
 
     glm::mat4 terrainModel = glm::mat4(1.0f);
-    terrainModel = glm::translate(terrainModel, glm::vec3(0, 0, 10));
 
     glm::mat4 waterModel = glm::mat4(1.0f);
     waterModel = glm::translate(waterModel, water.GetPosition());

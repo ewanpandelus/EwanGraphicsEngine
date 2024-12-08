@@ -32,7 +32,7 @@ private:
     int m_resolution;
     float m_scale;
 
-    glm::vec3 m_position = glm::vec3(0, 6, 10);
+    glm::vec3 m_position = glm::vec3(0, 6, 0);
 
     std::vector<std::vector<float>> vertexMap;
     std::vector<float> vertices;
