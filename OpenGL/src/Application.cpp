@@ -72,15 +72,10 @@ int main()
     float deltaTime = 0.0f;	// Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
 
-    glm::mat4 view;
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);;
-    glm::mat4 terrainModel = glm::mat4(1.0f);
-    terrainModel = glm::translate(terrainModel, glm::vec3(0, 0, 10));
-    terrainModel = glm::scale(terrainModel, glm::vec3(5, 5, 5));
 
-    glm::mat4 waterModel = glm::mat4(1.0f);
-    waterModel = glm::translate(waterModel, glm::vec3(0, 30, 10));
-    waterModel = glm::scale(waterModel, glm::vec3(5, 5, 5));
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);;
+
+
 
 
     /* Initialize the library */
@@ -121,7 +116,11 @@ int main()
     Model monkeyModel;
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
 
+    glm::mat4 terrainModel = glm::mat4(1.0f);
+    terrainModel = glm::translate(terrainModel, glm::vec3(0, 0, 10));
 
+    glm::mat4 waterModel = glm::mat4(1.0f);
+    waterModel = glm::translate(waterModel, water.GetPosition());
 
     //WaterFrameBuffers fbos = WaterFrameBuffers();
     //Model monkeyModel;
@@ -233,7 +232,7 @@ int main()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
+    float totalTime = 0;
     // load textures
     // -------------
     unsigned int cubeTexture = loadTexture("resources/textures/container.png");
@@ -282,10 +281,17 @@ int main()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
+        totalTime += deltaTime;
+        
         inputManager.updateInputCommands(window);
-        camera.UpdateCameraPosition(&inputManager, deltaTime);
+        camera.updateCameraPosition(&inputManager, deltaTime);
 
+
+        glm::vec3 cameraPos = camera.getCameraPos();
+        float distance = 2 * (cameraPos.y - water.GetPosition().y);
+        cameraPos.y -= distance;
+        camera.setCameraPos(cameraPos);
+        camera.invertPitch();
 
         // bind to framebuffer and draw scene as we normally would to color texture 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -295,7 +301,8 @@ int main()
         // INITIAL RENDER
         renderer.prepare();
 
-        view = glm::lookAt(camera.GetCameraPos(), camera.GetCameraPos() + camera.GetCameraFront(), camera.GetCameraUp());
+        glm::mat4 view;
+        view = std::fmod(totalTime, 2) == 0 ? camera.getView() : camera.getView();
         shader.activate();
         glm::mat4 model = glm::mat4(1.0f);
         shader.setMatrix4("view", view);
@@ -348,45 +355,48 @@ int main()
         renderer.prepare();
 
 
-        // Screen space quad with frame buffer texture 
+        //// Screen space quad with frame buffer texture 
         screenShader.activate();
         glBindVertexArray(quadVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
       
         //// SECOND RENDER 
-
+        cameraPos.y += distance;
+        camera.setCameraPos(cameraPos);
+        camera.invertPitch();
+        view = camera.getView();
     
-        //shader.activate();
-        //shader.setMatrix4("view", view);
-        //shader.setVector3("lightPosition", light.getLightPosition());
-        //shader.setVector4("lightColour", light.getLightColour());
-        //shader.setMatrix4("model", terrainModel);
+        shader.activate();
+        shader.setMatrix4("view", view);
+        shader.setVector3("lightPosition", light.getLightPosition());
+        shader.setVector4("lightColour", light.getLightColour());
+        shader.setMatrix4("model", terrainModel);
    
-        //terrainShader.activate();
-        //terrainShader.setMatrix4("model", glm::mat4(1.0f));
-        //terrainShader.setMatrix4("view", view);
-        //terrainShader.setVector3("lightPosition", light.getLightPosition());
-        //terrainShader.setVector4("lightColour", light.getLightColour());
-        //terrainShader.setMatrix4("model", terrainModel);
-        //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        terrainShader.activate();
+        terrainShader.setMatrix4("model", glm::mat4(1.0f));
+        terrainShader.setMatrix4("view", view);
+        terrainShader.setVector3("lightPosition", light.getLightPosition());
+        terrainShader.setVector4("lightColour", light.getLightColour());
+        terrainShader.setMatrix4("model", terrainModel);
+        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
   
-        //terrain.render();
-        //monkeyModel.bindTexture();
-        //monkeyModel.render();
+        terrain.render();
+        monkeyModel.bindTexture();
+        monkeyModel.render();
 
 
-        //waterShader.activate();
-        //waterShader.setMatrix4("view", view);
-        //waterShader.setVector3("lightPosition", light.getLightPosition());
-        //waterShader.setVector4("lightColour", light.getLightColour());
-        //waterShader.setMatrix4("model", waterModel);
-        //glDepthMask(false); //disable z-testing
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //water.render();
-        //glDepthMask(true); //disable z-testing
-        //glDisable(GL_BLEND);
+        waterShader.activate();
+        waterShader.setMatrix4("view", view);
+        waterShader.setVector3("lightPosition", light.getLightPosition());
+        waterShader.setVector4("lightColour", light.getLightColour());
+        waterShader.setMatrix4("model", waterModel);
+        glDepthMask(false); //disable z-testing
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        water.render();
+        glDepthMask(true); //disable z-testing
+        glDisable(GL_BLEND);
    
         
     
@@ -401,5 +411,5 @@ int main()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    camera.UpdateCameraOrientation(xpos, ypos);
+    camera.updateCameraOrientation(xpos, ypos);
 }

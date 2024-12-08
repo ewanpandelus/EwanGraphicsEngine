@@ -19,8 +19,9 @@ public:
         float u, v;
     };
 
-private:
+    glm::vec3 GetPosition() { return m_position; }
 
+private:
     void initialiseHeightMap();
     void setupBufferData();
     void generateBuffers();
@@ -31,6 +32,7 @@ private:
     int m_resolution;
     float m_scale;
 
+    glm::vec3 m_position = glm::vec3(0, 6, 10);
 
     std::vector<std::vector<float>> vertexMap;
     std::vector<float> vertices;
