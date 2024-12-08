@@ -73,10 +73,17 @@ int main()
     float lastFrame = 0.0f; // Time of last frame
 
 
+
+
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);;
 
 
-
+    std::vector<glm::vec3> treePositions;
+    treePositions.push_back(glm::vec3(25, 5, 45));
+    treePositions.push_back(glm::vec3(30, 5, 60));
+    treePositions.push_back(glm::vec3(35, 5, 40));
+    treePositions.push_back(glm::vec3(70, 5, 70));
+    treePositions.push_back(glm::vec3(60, 5, 60));
 
     /* Initialize the library */
     if (!glfwInit())
@@ -111,16 +118,29 @@ int main()
     waterShader.activate();
     waterShader.setMatrix4("projection", projection);
 
+
+
+    Shader treeShader("src/shaders/vsTreeShader.glsl", "src/shaders/fsTreeShader.glsl");
+    treeShader.activate();
+    treeShader.setMatrix4("projection", projection);
+
+
     Terrain terrain(glm::vec3(0, 1, 0), 256, 0.5f);
     Water water(256, 0.5f);
     Model monkeyModel;
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
+
+
+    Model tree;
+    tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
 
     glm::mat4 terrainModel = glm::mat4(1.0f);
     terrainModel = glm::translate(terrainModel, glm::vec3(0, 0, 10));
 
     glm::mat4 waterModel = glm::mat4(1.0f);
     waterModel = glm::translate(waterModel, water.GetPosition());
+
+    glm::mat4 treeModel = glm::mat4(1.0f);
 
     //WaterFrameBuffers fbos = WaterFrameBuffers();
     //Model monkeyModel;
@@ -293,7 +313,7 @@ int main()
         camera.setCameraPos(cameraPos);
         camera.invertPitch();
 
-        // bind to framebuffer and draw scene as we normally would to color texture 
+        // bind to framebuffer and draw scene as we normally would to color texture REFLECTION RENDER
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
@@ -302,7 +322,7 @@ int main()
         renderer.prepare();
 
         glm::mat4 view;
-        view = std::fmod(totalTime, 2) == 0 ? camera.getView() : camera.getView();
+        view = camera.getView();
         shader.activate();
         glm::mat4 model = glm::mat4(1.0f);
         shader.setMatrix4("view", view);
@@ -332,36 +352,29 @@ int main()
         terrainShader.setVector4("lightColour", light.getLightColour());
         terrainShader.setMatrix4("model", terrainModel);
         terrain.render();
-        monkeyModel.bindTexture();
-        monkeyModel.render();
-
-        waterShader.activate();
-        waterShader.setMatrix4("view", view);
-        waterShader.setVector3("lightPosition", light.getLightPosition());
-        waterShader.setVector4("lightColour", light.getLightColour());
-        waterShader.setMatrix4("model", waterModel);
-        glDepthMask(false); //disable z-testing
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        water.render();
-        glDepthMask(true); //enable z-testing
-        glDisable(GL_BLEND);
+      
+        treeShader.activate();
+        treeShader.setMatrix4("model", glm::mat4(1.0f));
+        treeShader.setMatrix4("view", view);
+        treeShader.setVector3("lightPosition", light.getLightPosition());
+        treeShader.setVector4("lightColour", light.getLightColour());
+        treeShader.setMatrix4("model", treeModel);
+        tree.render();
 
 
         // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test. - disable this line in future to properly render water
-        // clear all relevant buffers
+  
         renderer.prepare();
 
 
         //// Screen space quad with frame buffer texture 
-        screenShader.activate();
-        glBindVertexArray(quadVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //screenShader.activate();
+        //glBindVertexArray(quadVAO);
+        //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
       
-        //// SECOND RENDER 
+        //// SECOND RENDER REFRACTION
         cameraPos.y += distance;
         camera.setCameraPos(cameraPos);
         camera.invertPitch();
@@ -380,11 +393,22 @@ int main()
         terrainShader.setVector4("lightColour", light.getLightColour());
         terrainShader.setMatrix4("model", terrainModel);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-  
         terrain.render();
-        monkeyModel.bindTexture();
-        monkeyModel.render();
 
+
+        treeShader.activate();
+        treeShader.setMatrix4("model", glm::mat4(1.0f));
+        treeShader.setMatrix4("view", view);
+        treeShader.setVector3("lightPosition", light.getLightPosition());
+        treeShader.setVector4("lightColour", light.getLightColour());
+        tree.bindTexture();
+        for (int i = 0; i < treePositions.size(); i++) 
+        {
+            treeModel = glm::translate(treeModel, treePositions[i]);
+            treeShader.setMatrix4("model", treeModel);
+            tree.render();
+            treeModel = glm::mat4(1.0f);
+        }
 
         waterShader.activate();
         waterShader.setMatrix4("view", view);

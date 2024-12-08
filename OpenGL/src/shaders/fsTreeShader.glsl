@@ -25,5 +25,5 @@ void main()
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,1);
 	vec4 result = clamp(ambient+diffuse, 0, 1);
-	FragColor = result *texColour; //vec4(norm, 1);
+	FragColor = result; //vec4(norm, 1);
 };
