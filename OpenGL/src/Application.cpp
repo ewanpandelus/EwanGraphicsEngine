@@ -270,6 +270,7 @@ int main()
     unsigned int framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
     // create a color attachment texture
     unsigned int textureColorbuffer;
     glGenTextures(1, &textureColorbuffer);
@@ -288,6 +289,32 @@ int main()
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         return 0;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+    unsigned int framebuffer2;
+    glGenFramebuffers(1, &framebuffer2);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer2);
+
+    // create a color attachment texture
+    unsigned int textureColorbuffer2;
+    glGenTextures(1, &textureColorbuffer2);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer2, 0);
+    // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+    unsigned int rbo2;
+    glGenRenderbuffers(1, &rbo2);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo2);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo2); // now actually attach it
+    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        return 0;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -363,16 +390,12 @@ int main()
 
         // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  
         renderer.prepare();
 
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer2);
+        glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+        renderer.prepare();
 
-        //// Screen space quad with frame buffer texture 
-        //screenShader.activate();
-        //glBindVertexArray(quadVAO);
-        //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-      
         //// SECOND RENDER REFRACTION
         cameraPos.y += distance;
         camera.setCameraPos(cameraPos);
@@ -393,21 +416,22 @@ int main()
         terrainShader.setMatrix4("model", terrainModel);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
         terrain.render();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        renderer.prepare();
 
-
-        treeShader.activate();
-        treeShader.setMatrix4("model", glm::mat4(1.0f));
-        treeShader.setMatrix4("view", view);
-        treeShader.setVector3("lightPosition", light.getLightPosition());
-        treeShader.setVector4("lightColour", light.getLightColour());
-        tree.bindTexture();
-        for (int i = 0; i < treePositions.size(); i++) 
+        //// Screen space quad with frame buffer texture 
+         screenShader.activate();
+        glBindVertexArray(quadVAO);
+        if (fmod(floor(totalTime), 2) == 1) 
         {
-            treeModel = glm::translate(treeModel, treePositions[i]);
-            treeShader.setMatrix4("model", treeModel);
-            tree.render();
-            treeModel = glm::mat4(1.0f);
+            glBindTexture(GL_TEXTURE_2D, textureColorbuffer2);	// use the color attachment texture as the texture of the quad plane
         }
+        else 
+        {
+            glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+        }
+ 
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         waterShader.activate();
         waterShader.setMatrix4("view", view);
@@ -420,7 +444,7 @@ int main()
         water.render();
         glDepthMask(true); //disable z-testing
         glDisable(GL_BLEND);
-   
+
         
     
         glEnd();
