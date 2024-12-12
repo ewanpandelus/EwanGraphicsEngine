@@ -52,9 +52,15 @@ private:
 
 
 	 GLuint frameBuffer;
-	 GLuint texture;
 	 GLuint depthTexture;
 	 GLuint depthBuffer;
 
+
+
+	 GLuint textureColorbuffer;
+	 GLuint renderBufferObject;
+
+	 const unsigned int SCR_WIDTH = 800;
+	 const unsigned int SCR_HEIGHT = 600;
 };
 
