@@ -14,6 +14,7 @@
 class Terrain {
 public:
     Terrain(glm::vec3 localUp, int resolution, float scale);
+    Terrain() = default;
     ~Terrain();
     void render();
     void clean();

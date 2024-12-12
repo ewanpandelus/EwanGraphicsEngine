@@ -54,6 +54,9 @@
     <ClCompile Include="src\water\WaterShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -98,6 +101,9 @@
     <ClInclude Include="src\water\WaterShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\vsTerrainShader.glsl" />
@@ -108,7 +114,5 @@
     <None Include="src\shaders\fsStandard.glsl" />
     <None Include="src\shaders\fsWaterShader.glsl" />
     <None Include="src\shaders\vsWaterShader.glsl" />
-    <None Include="src\shaders\vsTreeShader.glsl" />
-    <None Include="src\shaders\fsTreeShader.glsl" />
   </ItemGroup>
 </Project>

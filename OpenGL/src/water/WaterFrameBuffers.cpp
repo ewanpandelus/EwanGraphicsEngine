@@ -2,7 +2,9 @@
 #include <cstddef>
 
 
-WaterFrameBuffers::WaterFrameBuffers()
+
+
+void WaterFrameBuffers::initialise()
 {
 	initialiseReflectionFrameBuffer();
 	initialiseRefractionFrameBuffer();

@@ -8,6 +8,7 @@ class Water
 {
 public:
     Water(int resolution, float scale);
+    Water() = default;
     ~Water();
     void render();
     void clean();

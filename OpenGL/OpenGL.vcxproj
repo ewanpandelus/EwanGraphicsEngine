@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\maths\PerlinNoise.cpp" />
     <ClCompile Include="src\Planet.cpp" />
     <ClCompile Include="src\Model.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="src\water\WaterShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\maths\PerlinNoise.h" />
     <ClInclude Include="src\Planet.h" />
     <ClInclude Include="src\Model.h" />

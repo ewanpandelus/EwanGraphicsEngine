@@ -6,5 +6,11 @@ class Renderer
 {
 public:
 	void prepare();
+
+	void initialiseShaders();
+
+	void renderOpaqueObjects();
+
+	void renderTransparentObjects();
 };
 

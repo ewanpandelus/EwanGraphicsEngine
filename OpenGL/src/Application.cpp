@@ -14,6 +14,7 @@
 #include "Planet.h"
 #include "water/Water.h"
 #include "water/WaterFrameBuffers.h"
+#include "Game.h"
 
 
 const unsigned int SCR_WIDTH = 800;
@@ -56,9 +57,8 @@ unsigned int loadTexture(char const* path)
     return textureID;
 }
 
-Camera camera;
 
-
+Game game;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
@@ -66,17 +66,6 @@ int main()
 {
  
     GLFWwindow* window;
-    InputManager inputManager;
-    Light light(glm::vec3(10.0f,10.0f, 10.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f));
-
-    float deltaTime = 0.0f;	// Time between current frame and last frame
-    float lastFrame = 0.0f; // Time of last frame
-
-
-
-
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);;
-
 
     std::vector<glm::vec3> treePositions;
     treePositions.push_back(glm::vec3(5, 5, 100));
@@ -85,15 +74,16 @@ int main()
     treePositions.push_back(glm::vec3(50, 5, 50));
     treePositions.push_back(glm::vec3(30, 5, 15));
 
+
     /* Initialize the library */
     if (!glfwInit())
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
   
-    int width, height;
+    int width = 800, height = 600;
 
-    window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -108,49 +98,12 @@ int main()
    
     glfwSetCursorPosCallback(window, mouse_callback);
   
-    Renderer renderer;
-    Shader terrainShader("src/shaders/vsTerrainShader.glsl", "src/shaders/fsTerrainShader.glsl");
-    terrainShader.activate();
-    terrainShader.setMatrix4("projection", projection);
 
-
-    Shader waterShader("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
-    waterShader.activate();
-    waterShader.setMatrix4("projection", projection);
+    game.initialise(width, height, window);
 
 
 
-    Shader treeShader("src/shaders/vsTreeShader.glsl", "src/shaders/fsTreeShader.glsl");
-    treeShader.activate();
-    treeShader.setMatrix4("projection", projection);
 
-
-    Terrain terrain(glm::vec3(0, 1, 0), 256, 0.5f);
-    Water water(256, 0.5f);
-    Model monkeyModel;
-    monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
-
-
-    Model tree;
-    tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
-
-    glm::mat4 terrainModel = glm::mat4(1.0f);
-
-    glm::mat4 waterModel = glm::mat4(1.0f);
-    waterModel = glm::translate(waterModel, water.GetPosition());
-
-    glm::mat4 treeModel = glm::mat4(1.0f);
-
-    //WaterFrameBuffers fbos = WaterFrameBuffers();
-    //Model monkeyModel;
-    //monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glEnable(GL_DEPTH_TEST);
-    // build and compile shaders
-    // -------------------------
-    Shader shader("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
-    Shader screenShader("src/shaders/vsScreen.glsl","src/shaders/fsScreen.glsl" );
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -259,145 +212,11 @@ int main()
 
     // shader configuration
     // --------------------
-    shader.activate();
-    shader.setInt("texture1", 0);
 
-    screenShader.activate();
-    screenShader.setInt("screenTexture", 0);
-    WaterFrameBuffers fbos;
    
     while (!glfwWindowShouldClose(window))
     {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
-
-
-
-
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        totalTime += deltaTime;
-        
-        inputManager.updateInputCommands(window);
-        camera.updateCameraPosition(&inputManager, deltaTime);
-
-
-        glm::vec3 cameraPos = camera.getCameraPos();
-        float distance = 2 * (cameraPos.y - water.GetPosition().y);
-        cameraPos.y -= distance;
-        camera.setCameraPos(cameraPos);
-        camera.invertPitch();
-
-        // bind to framebuffer and draw scene as we normally would to color texture REFLECTION RENDER
-
-        fbos.bindReflectionFrameBuffer();
-        glEnable(GL_DEPTH_TEST); 
-
-        // make sure we clear the framebuffer's content
-        renderer.prepare();
-
-        glm::mat4 view;
-        view = camera.getView();
-        shader.activate();
-        glm::mat4 model = glm::mat4(1.0f);
-        shader.setMatrix4("view", view);
-        shader.setMatrix4("projection", projection);
-        // cubes
-        glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        shader.setMatrix4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        shader.setMatrix4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        shader.setMatrix4("model", glm::mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        terrainShader.activate();
-        terrainShader.setMatrix4("model", glm::mat4(1.0f));
-        terrainShader.setMatrix4("view", view);
-        terrainShader.setVector3("lightPosition", light.getLightPosition());
-        terrainShader.setVector4("lightColour", light.getLightColour());
-        terrainShader.setMatrix4("model", terrainModel);
-        terrain.render();
-      
-        treeShader.activate();
-        treeShader.setMatrix4("model", glm::mat4(1.0f));
-        treeShader.setMatrix4("view", view);
-        treeShader.setVector3("lightPosition", light.getLightPosition());
-        treeShader.setVector4("lightColour", light.getLightColour());
-        treeShader.setMatrix4("model", treeModel);
-        tree.render();
-
-        fbos.unbindCurrentFrameBuffer();
-        fbos.bindRefractionFrameBuffer();
-        glEnable(GL_DEPTH_TEST);
-        renderer.prepare();
-
-        //// SECOND RENDER REFRACTION
-        cameraPos.y += distance;
-        camera.setCameraPos(cameraPos);
-        camera.invertPitch();
-        view = camera.getView();
-    
-        shader.activate();
-        shader.setMatrix4("view", view);
-        shader.setVector3("lightPosition", light.getLightPosition());
-        shader.setVector4("lightColour", light.getLightColour());
-        shader.setMatrix4("model", terrainModel);
-   
-        terrainShader.activate();
-        terrainShader.setMatrix4("model", glm::mat4(1.0f));
-        terrainShader.setMatrix4("view", view);
-        terrainShader.setVector3("lightPosition", light.getLightPosition());
-        terrainShader.setVector4("lightColour", light.getLightColour());
-        terrainShader.setMatrix4("model", terrainModel);
-        glBindTexture(GL_TEXTURE_2D, fbos.getReflectionTexture());	// use the color attachment texture as the texture of the quad plane
-        terrain.render();
-
-
-        fbos.unbindCurrentFrameBuffer();
-        renderer.prepare();
-
-        //// Screen space quad with frame buffer texture 
-         screenShader.activate();
-        glBindVertexArray(quadVAO);
-        if (fmod(floor(totalTime), 2) == 1) 
-        {
-            glBindTexture(GL_TEXTURE_2D, fbos.getReflectionTexture());	// use the color attachment texture as the texture of the quad plane
-        }
-        else 
-        {
-            glBindTexture(GL_TEXTURE_2D, fbos.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-        }
- 
-        glDrawArrays(GL_TRIANGLES, 0, 6);   
-
-        waterShader.activate();
-        waterShader.setMatrix4("view", view);
-        waterShader.setVector3("lightPosition", light.getLightPosition());
-        waterShader.setVector4("lightColour", light.getLightColour());
-        waterShader.setMatrix4("model", waterModel);
-        glDepthMask(false); //disable z-testing
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        water.render();
-        glDepthMask(true); //disable z-testing
-        glDisable(GL_BLEND);
-
-        
-    
-        glEnd();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        game.tick(window);
     }
 
     glfwTerminate();
@@ -406,5 +225,5 @@ int main()
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    camera.updateCameraOrientation(xpos, ypos);
+    game.getCamera()->updateCameraOrientation(xpos, ypos);
 }

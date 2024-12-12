@@ -13,6 +13,7 @@ public:
         lightColour = _lightColour;
     }
 
+    Light() = default;
 
     void SetLightPosition(glm::vec3 _lightPosition) { lightPosition = _lightPosition; }
     void SetLightColour(glm::vec4 _lightColour) { lightColour = _lightColour; }

@@ -11,7 +11,7 @@ protected:
 	const static int REFRACTION_HEIGHT = 720;
 
 public:
-	WaterFrameBuffers();
+	void initialise();
 	
 	void cleanUp();
 

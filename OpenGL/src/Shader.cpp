@@ -1,7 +1,11 @@
 #include "Shader.h"
 
 
- Shader::Shader(const char* vertexPath, const char* fragmentPath)
+ Shader::Shader()
+ {
+ }
+
+ void Shader::initialise(const char* vertexPath, const char* fragmentPath)
  {
      // 1. retrieve the vertex/fragment source code from filePath
      std::string vertexCode;
