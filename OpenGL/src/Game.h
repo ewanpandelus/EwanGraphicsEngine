@@ -1,7 +1,4 @@
 #pragma once
-#include "Renderer.h"
-#include "Shader.h"
-#include "Model.h"
 #include "Terrain.h"
 #include "water/Water.h"
 #include <glm.hpp>
@@ -9,7 +6,11 @@
 #include <gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "water/WaterFrameBuffers.h"
-#include "Light.h"
+#include "graphics/Shader.h"
+#include "graphics/Light.h"
+#include "graphics/Renderer.h"
+#include "graphics/TextureLoader.h"
+#include "graphics/Model.h"
 
 class Game
 {
@@ -27,6 +28,7 @@ private:
 
     void cleanUp();
 
+    // Rendering
     Renderer renderer;
 
     // Camera 
@@ -52,6 +54,10 @@ private:
 
     // Lighting 
     Light light; 
+
+    // Textures
+    unsigned int cubeTexture;
+    unsigned int floorTexture;
     
     // FrameBufferObjects 
     WaterFrameBuffers waterFrameBuffers;
@@ -66,6 +72,13 @@ private:
     glm::mat4 terrainModel = glm::mat4(1.0f);
     glm::mat4 waterModel = glm::mat4(1.0f);
     glm::mat4 treeModel = glm::mat4(1.0f);
-   
+
+    std::vector<glm::vec3> treePositions;
+
+    // --------------------------------------- TEMP - TO CLEAN
+
+    float quadVertices[24];// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+    unsigned int quadVAO, quadVBO;
+    //
 };
 

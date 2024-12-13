@@ -42,7 +42,40 @@ void Game::initialise(int width, int height, GLFWwindow* window)
     screenShader.activate();
     screenShader.setInt("screenTexture", 0);
 
+
+    unsigned int cubeTexture = TextureLoader::loadTexture("resources/textures/container.png");
+    unsigned int floorTexture = TextureLoader::loadTexture("resources/textures/wall.png");
+
     waterFrameBuffers.initialise();
+
+    treePositions.push_back(glm::vec3(5, 5, 100));
+    treePositions.push_back(glm::vec3(100, 5, 5));
+    treePositions.push_back(glm::vec3(100, 5, 100));
+    treePositions.push_back(glm::vec3(50, 5, 50));
+    treePositions.push_back(glm::vec3(30, 5, 15));
+
+
+
+    float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+    // positions   // texCoords
+    -1.0f,  1.0f,  0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+     1.0f, -1.0f,  1.0f, 0.0f,
+
+    -1.0f,  1.0f,  0.0f, 1.0f,
+     1.0f, -1.0f,  1.0f, 0.0f,
+     1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 
 void Game::tick(GLFWwindow* window)
@@ -62,7 +95,6 @@ void Game::tick(GLFWwindow* window)
     glEnd();
     glfwSwapBuffers(window);
     glfwPollEvents();
-
     cleanUp();
 }
 
@@ -81,30 +113,13 @@ void Game::render()
 
     // make sure we clear the framebuffer's content
     renderer.prepare();
-
+    // FIRST RENDER - REFLECTION
     glm::mat4 view;
     view = camera.getView();
     shader.activate();
     glm::mat4 model = glm::mat4(1.0f);
     shader.setMatrix4("view", view);
     shader.setMatrix4("projection", projection);
-    // cubes
-    //glBindVertexArray(cubeVAO);
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, cubeTexture);
-    //model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    //shader.setMatrix4("model", model);
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-    //model = glm::mat4(1.0f);
-    //model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-    //shader.setMatrix4("model", model);
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-    //// floor
-    //glBindVertexArray(planeVAO);
-    //glBindTexture(GL_TEXTURE_2D, floorTexture);
-    //shader.setMatrix4("model", glm::mat4(1.0f));
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
-    //glBindVertexArray(0);
 
     terrainShader.activate();
     terrainShader.setMatrix4("model", glm::mat4(1.0f));
@@ -125,7 +140,7 @@ void Game::render()
     waterFrameBuffers.unbindCurrentFrameBuffer();
     waterFrameBuffers.bindRefractionFrameBuffer();
     glEnable(GL_DEPTH_TEST);
-    // renderer.prepare();
+    renderer.prepare();
 
      //// SECOND RENDER REFRACTION
     cameraPos.y += distance;
@@ -145,25 +160,24 @@ void Game::render()
     terrainShader.setVector3("lightPosition", light.getLightPosition());
     terrainShader.setVector4("lightColour", light.getLightColour());
     terrainShader.setMatrix4("model", terrainModel);
-    glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getReflectionTexture());	// use the color attachment texture as the texture of the quad plane
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);	// use the color attachment texture as the texture of the quad plane
     terrain.render();
 
 
     waterFrameBuffers.unbindCurrentFrameBuffer();
     renderer.prepare();
 
-     //// Screen space quad with frame buffer texture 
-     //screenShader.activate();
-     //glBindVertexArray(quadVAO);
-     //if (fmod(floor(totalTime), 2) == 1)
-     //{
-     //    glBindTexture(GL_TEXTURE_2D, fbos.getReflectionTexture());	// use the color attachment texture as the texture of the quad plane
-     //}
-     //else
-     //{
-     //    glBindTexture(GL_TEXTURE_2D, fbos.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-     //}
-
+     // Screen space quad with frame buffer texture 
+     screenShader.activate();
+     glBindVertexArray(quadVAO);
+     if (fmod(floor(totalTime), 2) == 1)
+     {
+         glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getReflectionTexture());	// use the color attachment texture as the texture of the quad plane
+     }
+     else
+     {
+          glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+     }
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     waterShader.activate();
@@ -183,4 +197,5 @@ void Game::render()
 
 void Game::cleanUp()
 {
+    //create shutDown for data types 
 }

@@ -49,3 +49,5 @@ OpenGL/OpenGL.vcxproj.filters
 OpenGL/OpenGL.vcxproj
 OpenGL/OpenGL.vcxproj.filters
 *.vcxproj
+OpenGL/OpenGL.vcxproj
+.vs/OpenGL/v16/Browse.VC.db
