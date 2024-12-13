@@ -1,7 +1,6 @@
 #pragma once
 
-#ifndef TERRAIN_H
-#define TERRAIN_H
+
 
 #include <GL/glew.h>
 #include "glm.hpp"
@@ -57,7 +56,6 @@ private:
 
     int m_vertexCount, m_indexCount;
 
-    GLuint VAO, VBO, EBO;
+    GLuint VAO = 0, VBO = 0, EBO = 0;
 };
 
-#endif

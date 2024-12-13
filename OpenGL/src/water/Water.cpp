@@ -116,12 +116,10 @@ void Water::generateBuffers()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-	;;// glGenFramebuffers();
 }
 
 void Water::bindBuffers() {
 
-	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
@@ -139,8 +137,6 @@ void Water::bindBuffers() {
 
 void Water::render() {
 	bindBuffers();
-	// glUseProgram(shaderProgram);
-	// glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

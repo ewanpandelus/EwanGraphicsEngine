@@ -303,10 +303,9 @@ void Terrain::bindBuffers() {
     glBindVertexArray(0);
 }
 
-void Terrain::render() {
+void Terrain::render() 
+{
 	bindBuffers();
-   // glUseProgram(shaderProgram);
-   // glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
