@@ -44,7 +44,7 @@ void Game::tick(GLFWwindow* window)
 void Game::render()
 {
     glm::vec3 cameraPos = camera.getCameraPos();
-    float distance = 2 * (cameraPos.y - renderer.getWater().GetPosition().y);
+    float distance = 2 * (cameraPos.y - renderer.getWater()->getPosition().y);
     cameraPos.y -= distance;
     camera.setCameraPos(cameraPos);
     camera.invertPitch();
@@ -69,6 +69,8 @@ void Game::render()
     cameraPos.y += distance;
     camera.setCameraPos(cameraPos);
     camera.invertPitch();
+
+
     renderer.prepare(camera.getView());
     renderer.renderOpaqueObjects();
 
@@ -77,15 +79,17 @@ void Game::render()
     renderer.prepare(camera.getView());
 
      // Screen space quad with frame buffer texture 
-    if (fmod(floor(totalTime), 2) == 1)
-    {
-        renderer.renderToScreen(waterFrameBuffers.getReflectionTexture());
-    }
-    else
-    {
-        renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-    }
-
+    //if (fmod(floor(totalTime), 2) == 1)
+    //{
+    //    renderer.renderToScreen(waterFrameBuffers.getReflectionTexture());
+    //}
+    //else
+    //{
+    //    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+    //}
+    /// Last render - what we see 
+    renderer.renderOpaqueObjects();
+    renderer.renderTransparentObjects();
 }
 
 void Game::cleanUp()

@@ -7,10 +7,9 @@
 #include "Light.h"
 #include "Shader.h"
 #include "../Terrain.h"
-#include "../water/Water.h"
 #include "Model.h"
 #include "TextureLoader.h"
-#include "Model.h"
+#include "../water/Water.h"
 
 class Renderer
 {
@@ -24,9 +23,9 @@ public:
 
 	void renderTransparentObjects();
 
-	Water getWater() {return *water;}
-
 	void renderToScreen(unsigned int textureToBind);
+
+	Water* getWater() { return water; }
 
 private:
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);

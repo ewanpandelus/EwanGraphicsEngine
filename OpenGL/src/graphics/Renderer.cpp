@@ -31,13 +31,13 @@ void Renderer::initialise()
     treeShader.setMatrix4("projection", projection);
 
 
-    terrain = new Terrain(glm::vec3(0, 1, 0), 256, 0.5f);
-    water = new Water(256, 0.5f);
+    terrain = new Terrain(glm::vec3(0, 1, 0), 256, 1);
+    water = new Water(256, 1);
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
     Model tree;
     tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
 
-    waterModel = glm::translate(waterModel, water->GetPosition());
+    waterModel = glm::translate(waterModel, glm::vec3(0,6,0));
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -89,8 +89,12 @@ void Renderer::renderOpaqueObjects()
     treeShader.setVector4("lightColour", light.getLightColour());
     treeShader.setMatrix4("model", treeModel);
     tree.render();
-    // Move to transparent pass
+}
+
+void Renderer::renderTransparentObjects()
+{
     waterShader.activate();
+    waterShader.setMatrix4("model", glm::mat4(1.0f));
     waterShader.setMatrix4("view", m_currentView);
     waterShader.setVector3("lightPosition", light.getLightPosition());
     waterShader.setVector4("lightColour", light.getLightColour());
@@ -98,19 +102,9 @@ void Renderer::renderOpaqueObjects()
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    if (water != nullptr)
-    {
-        water->render();
-    }
+    water->render();
     glDepthMask(true); //disable z-testing
     glDisable(GL_BLEND);
-    // Move to transparent class 
-}
-
-void Renderer::renderTransparentObjects()
-{
- 
-
 }
 
 void Renderer::renderToScreen(unsigned int textureToBind)
