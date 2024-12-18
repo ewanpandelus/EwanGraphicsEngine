@@ -7,7 +7,7 @@ in vec3 Normal;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec2 TexCoord;
-
+in vec4 vertexPos;
 
 uniform vec4 tryColor; // we set this variable in the OpenGL code.
 uniform vec4 lightColour;
@@ -16,14 +16,26 @@ uniform sampler2D ourTexture;
 
 void main()
 {
+	
 	vec4 texColour = texture(ourTexture, TexCoord);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
 
+	vec4 terrainColour = vec4(0,0,0,0);
+
+	if(vertexPos.y <100)
+	{
+		terrainColour = vec4(0,1,0,1);
+	}
+		if(vertexPos.y >=100)
+	{
+		terrainColour = vec4(0.1,0.1,0.1,1);
+	}
+
 	float nDot1 = dot(norm, vec3(0.5, 1, 1));
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,1);
 	vec4 result = clamp(ambient+diffuse, 0, 1);
-	FragColor = result;// *texColour; //vec4(norm, 1);
+	FragColor = result * terrainColour;// *texColour; //vec4(norm, 1);
 };
