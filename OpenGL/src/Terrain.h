@@ -48,9 +48,10 @@ private:
     std::vector<float> vertices;
     std::vector<long> indices;
 
-    float m_frequency = 0.05f, m_amplitude = 6.f;
-    float m_persistence = 0.5f, m_lacunarity = 0.2f;
-
+    float m_frequency = 0.1f, m_amplitude = 20.f;
+    float m_persistence = 2.f, m_lacunarity = 0.45f;
+    
+    float m_maximumPondDepth = 20;
 
     int m_octaves = 5;
 

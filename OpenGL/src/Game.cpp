@@ -89,7 +89,7 @@ void Game::render()
     //}
     /// Last render - what we see 
     renderer.renderOpaqueObjects();
-    renderer.renderTransparentObjects();
+    renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture());
 }
 
 void Game::cleanUp()

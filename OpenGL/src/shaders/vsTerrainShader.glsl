@@ -12,6 +12,7 @@ uniform mat4 transform;
 uniform vec3 lightPosition;
 
 out vec3 ourColor;
+out vec4 vertexPos;
 out vec3 surfaceNormal;
 out vec3 Normal;
 out vec3 toLightVector;

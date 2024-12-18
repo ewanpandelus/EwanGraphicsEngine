@@ -56,6 +56,8 @@
      glLinkProgram(ID);
      checkCompileErrors(ID, "PROGRAM");
      // delete the shaders as they're linked into our program now and no longer necessary
+     getAllUniformLocations();
+
      glDeleteShader(vertex);
      glDeleteShader(fragment);
  }
@@ -118,4 +120,10 @@ void Shader::checkCompileErrors(unsigned int shader, std::string type)
             std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
         }
     }
+}
+
+void Shader::getAllUniformLocations()
+{
+    locationReflectionTexture = glGetUniformLocation(ID, "reflectionTexture");
+    locationRefractionTexture = glGetUniformLocation(ID, "refractionTexture");
 }

@@ -31,13 +31,14 @@ void Renderer::initialise()
     treeShader.setMatrix4("projection", projection);
 
 
-    terrain = new Terrain(glm::vec3(0, 1, 0), 256, 1);
-    water = new Water(256, 1);
+    terrain = new Terrain(glm::vec3(0, 1, 0), 256, 4);
+    water = new Water(256, 4);
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
     Model tree;
     tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
 
-    waterModel = glm::translate(waterModel, glm::vec3(0,6,0));
+    terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
+    waterModel = glm::translate(waterModel, glm::vec3(25,6,25));
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -91,7 +92,7 @@ void Renderer::renderOpaqueObjects()
     tree.render();
 }
 
-void Renderer::renderTransparentObjects()
+void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture)
 {
     waterShader.activate();
     waterShader.setMatrix4("model", glm::mat4(1.0f));
@@ -101,6 +102,10 @@ void Renderer::renderTransparentObjects()
     waterShader.setMatrix4("model", waterModel);
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, refractionTexture);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water->render();
     glDepthMask(true); //disable z-testing

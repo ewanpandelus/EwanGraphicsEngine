@@ -40,29 +40,30 @@ void Terrain::initialiseHeightMap()
 	pn.Initialize();
 	float initialAmp = m_amplitude;
 	float initialFrequency = m_frequency;
+	int centrePos = m_resolution / 2;
     for (int j = 0; j < m_resolution; j++)
     {
         for (int i = 0; i < m_resolution; i++)
         {
             index = (m_resolution * j) + i;
 			glm::vec2 percent = glm::vec2(j / ((float) m_resolution - 1), i / ((float) m_resolution - 1));
-			glm::vec3 pointOnUnitCube = m_localUp + (percent.x - .5f) * 2 * m_axisA + (percent.y - .5f) * 2 * m_axisB;
-		    glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube) * m_scale;
-			
+
 
 			float noiseHeight = 0;
 			for (int octave = 0; octave < m_octaves; octave++) 
 			{
-
 				float perlinValue = pn.Evaluate(glm::vec3(i,j,1), m_frequency) * m_amplitude;
 			    noiseHeight += perlinValue;
 				m_amplitude *= m_persistence;
 				m_frequency *= m_lacunarity;
-	
 			}
+			const float distanceToCentre = (glm::distance(glm::vec2(i, j), glm::vec2(centrePos, centrePos)));
 	
-			pointOnUnitSphere = (pointOnUnitSphere * (1 + noiseHeight));
+			noiseHeight += distanceToCentre;
+			
 
+			
+	
 			m_amplitude = initialAmp;
 			m_frequency = initialFrequency;
 	
