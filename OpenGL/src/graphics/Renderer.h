@@ -21,6 +21,10 @@ public:
 
 	void renderOpaqueObjects();
 
+	void renderRefractionPass();
+
+	void renderReflectionPass();
+
 	void renderWater(unsigned int reflectionTexture, unsigned int refractionTexture);
 
 	void renderToScreen(unsigned int textureToBind);

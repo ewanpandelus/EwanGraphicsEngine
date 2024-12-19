@@ -13,7 +13,7 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    light = Light(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    light = Light(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     shader.initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
     screenShader.initialise("src/shaders/vsScreen.glsl", "src/shaders/fsScreen.glsl");
@@ -90,6 +90,26 @@ void Renderer::renderOpaqueObjects()
     treeShader.setVector4("lightColour", light.getLightColour());
     treeShader.setMatrix4("model", treeModel);
     tree.render();
+}
+
+void Renderer::renderRefractionPass()
+{
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_CLIP_DISTANCE0);
+    terrainShader.activate();
+    // maybe not working properly?
+    // isn't working
+    terrainShader.setVector4("plane", glm::vec4(0,-1,0,6));
+    renderOpaqueObjects();
+}
+
+void Renderer::renderReflectionPass()
+{
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_CLIP_DISTANCE0);
+    terrainShader.activate();
+    terrainShader.setVector4("plane", glm::vec4(0, 1, 0, -6));
+    renderOpaqueObjects();
 }
 
 void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture)

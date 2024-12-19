@@ -16,12 +16,14 @@ out vec3 surfaceNormal;
 out vec3 Normal;
 out vec3 toLightVector;
 out vec2 TexCoord;
+out vec4 clipSpace;
 
 out vec3 FragPos;  
 void main()
 {
    vec4 worldPosition = model * vec4(aPos, 1.0);
-   gl_Position = projection * view * model * vec4(aPos, 1);
+   clipSpace = projection * view * model * vec4(aPos, 1);
+   gl_Position = clipSpace;
    FragPos = vec3(model * vec4(aPos, 1.0));
    ourColor = vec3(1,1,1); // set ourColor to the input color we got from the vertex data
    surfaceNormal = (model*vec4(aNormal, 0.0)).xyz;

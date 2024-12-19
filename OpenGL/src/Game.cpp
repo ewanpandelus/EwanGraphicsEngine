@@ -58,7 +58,7 @@ void Game::render()
     renderer.prepare(camera.getView());
 
     // FIRST RENDER - REFLECTION
-    renderer.renderOpaqueObjects();
+    renderer.renderReflectionPass();
 
     waterFrameBuffers.unbindCurrentFrameBuffer();
     waterFrameBuffers.bindRefractionFrameBuffer();
@@ -72,7 +72,7 @@ void Game::render()
 
 
     renderer.prepare(camera.getView());
-    renderer.renderOpaqueObjects();
+    renderer.renderRefractionPass();
 
 
     waterFrameBuffers.unbindCurrentFrameBuffer();
@@ -84,9 +84,9 @@ void Game::render()
     //    renderer.renderToScreen(waterFrameBuffers.getReflectionTexture());
     //}
     //else
-    //{
-    //    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-    //}
+    
+   // renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+    glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
     renderer.renderOpaqueObjects();
     renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture());
