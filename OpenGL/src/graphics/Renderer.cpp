@@ -49,7 +49,7 @@ void Renderer::initialise()
     screenShader.setInt("screenTexture", 0);
 
 
-
+    dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
 
 
     float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -112,18 +112,23 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.setVector3("lightPosition", light.getLightPosition());
     waterShader.setVector4("lightColour", light.getLightColour());
     waterShader.setMatrix4("model", waterModel);
+    waterShader.setFloat("time", glfwGetTime()) ;
+    
+ 
+
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
 
-    glUniform1i(glGetUniformLocation(waterShader.ID, "reflectionTexture"), 0);
-    glUniform1i(glGetUniformLocation(waterShader.ID, "refractionTexture"), 1);
+    waterShader.setInt("reflectionTexture", 0);
+    waterShader.setInt("refractionTexture", 1);
+    waterShader.setInt("dudvMap", 2);
 
-    // or set it via the texture class
-    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, refractionTexture);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, dudvMap);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water->render();
     glDepthMask(true); //disable z-testing

@@ -34,9 +34,9 @@ void Game::tick(GLFWwindow* window)
     inputManager.updateInputCommands(window);
     camera.updateCameraPosition(&inputManager, deltaTime);
     render();
-
     glEnd();
     glfwSwapBuffers(window);
+
     glfwPollEvents();
     cleanUp();
 }

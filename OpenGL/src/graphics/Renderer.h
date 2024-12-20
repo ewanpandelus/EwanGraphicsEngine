@@ -50,6 +50,7 @@ private:
 	// Textures
 	unsigned int cubeTexture;
 	unsigned int floorTexture;
+	unsigned int dudvMap;
 
 	// Environment
 	Water* water{};
