@@ -21,6 +21,7 @@ public:
 
 	const void updateCameraOrientation(float xMouseOffset, float yMouseOffset);
 	const void updateCameraPosition(InputManager* InputManager, float deltaTime);
+	const void updateCameraView();
 
 
 	const glm::vec3 getCameraPos() const { return m_cameraPos; }
@@ -28,7 +29,10 @@ public:
 	const glm::vec3 getCameraUp() const { return m_cameraUp; }
 	const glm::mat4 getView() const { return glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp); }
 
-	const void invertPitch() { this->m_pitch = -m_pitch; }
+	const void invertPitch() {
+		this->m_pitch *= -1;
+		updateCameraView();
+	}
 
     void setCameraPos(glm::vec3 cameraPos) { m_cameraPos = cameraPos; }
 	void setCameraFront(glm::vec3 cameraFront) { m_cameraFront = cameraFront; }

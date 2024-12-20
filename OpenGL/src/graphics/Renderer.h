@@ -31,6 +31,7 @@ public:
 
 	Water* getWater() { return water; }
 
+
 private:
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 	glm::mat4 m_currentView;
@@ -39,6 +40,7 @@ private:
 	Light light;
 
 	// Shaders 
+
 	Shader terrainShader;
 	Shader treeShader;
 	Shader screenShader;

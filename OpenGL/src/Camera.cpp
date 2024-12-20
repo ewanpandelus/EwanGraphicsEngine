@@ -52,3 +52,12 @@ const void Camera::updateCameraPosition(InputManager* inputManager, float deltaT
     if (inputManager->right.commandActive)
         m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_cameraSpeed * deltaTime;
 }
+
+const void Camera::updateCameraView()
+{
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    m_cameraFront = glm::normalize(front);
+}

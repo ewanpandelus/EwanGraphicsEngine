@@ -78,14 +78,15 @@ void Game::render()
     waterFrameBuffers.unbindCurrentFrameBuffer();
     renderer.prepare(camera.getView());
 
-     // Screen space quad with frame buffer texture 
+    //  Screen space quad with frame buffer texture 
     //if (fmod(floor(totalTime), 2) == 1)
     //{
-    //    renderer.renderToScreen(waterFrameBuffers.getReflectionTexture());
+    //      camera.invertPitch();//  renderer.renderToScreen(waterFrameBuffers.getReflectionTexture());
     //}
     //else
-    
-   // renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+    //{
+    //    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+    //}
     glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
     renderer.renderOpaqueObjects();

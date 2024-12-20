@@ -22,9 +22,11 @@ void Renderer::initialise()
     terrainShader.activate();
     terrainShader.setMatrix4("projection", projection);
 
+
     waterShader.initialise("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
     waterShader.activate();
     waterShader.setMatrix4("projection", projection);
+
 
     treeShader.initialise("src/shaders/vsTreeShader.glsl", "src/shaders/fsTreeShader.glsl");
     treeShader.activate();
@@ -46,8 +48,8 @@ void Renderer::initialise()
     screenShader.activate();
     screenShader.setInt("screenTexture", 0);
 
-    unsigned int cubeTexture = TextureLoader::loadTexture("resources/textures/container.png");
-    unsigned int floorTexture = TextureLoader::loadTexture("resources/textures/wall.png");
+
+
 
 
     float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -75,21 +77,7 @@ void Renderer::initialise()
 
 void Renderer::renderOpaqueObjects()
 {
-    terrainShader.activate();
-    terrainShader.setMatrix4("model", glm::mat4(1.0f));
-    terrainShader.setMatrix4("view", m_currentView);
-    terrainShader.setVector3("lightPosition", light.getLightPosition());
-    terrainShader.setVector4("lightColour", light.getLightColour());
-    terrainShader.setMatrix4("model", terrainModel);
     terrain->render();
-
-    treeShader.activate();
-    treeShader.setMatrix4("model", glm::mat4(1.0f));
-    treeShader.setMatrix4("view", m_currentView);
-    treeShader.setVector3("lightPosition", light.getLightPosition());
-    treeShader.setVector4("lightColour", light.getLightColour());
-    treeShader.setMatrix4("model", treeModel);
-    tree.render();
 }
 
 void Renderer::renderRefractionPass()
@@ -97,9 +85,10 @@ void Renderer::renderRefractionPass()
     glEnable(GL_CULL_FACE);
     glEnable(GL_CLIP_DISTANCE0);
     terrainShader.activate();
-    // maybe not working properly?
-    // isn't working
-    terrainShader.setVector4("plane", glm::vec4(0,-1,0,6));
+    terrainShader.setVector4("plane", glm::vec4(0, -1, 0, 6));
+    terrainShader.setMatrix4("view", m_currentView);
+    terrainShader.setVector4("lightColour", light.getLightColour());
+    terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects();
 }
 
@@ -108,7 +97,10 @@ void Renderer::renderReflectionPass()
     glEnable(GL_CULL_FACE);
     glEnable(GL_CLIP_DISTANCE0);
     terrainShader.activate();
+    terrainShader.setMatrix4("view", m_currentView);
+    terrainShader.setVector3("lightPosition", glm::vec3(1,1,0));
     terrainShader.setVector4("plane", glm::vec4(0, 1, 0, -6));
+    terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects();
 }
 
@@ -122,6 +114,12 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.setMatrix4("model", waterModel);
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
+
+    glUniform1i(glGetUniformLocation(waterShader.ID, "reflectionTexture"), 0);
+    glUniform1i(glGetUniformLocation(waterShader.ID, "refractionTexture"), 1);
+
+    // or set it via the texture class
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
     glActiveTexture(GL_TEXTURE1);

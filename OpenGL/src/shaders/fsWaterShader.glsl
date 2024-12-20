@@ -38,6 +38,6 @@ void main()
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,0.5);
 
-    FragColor = outColour;
+    FragColor = mix(outColour, colour, 0.2);
 
 };
