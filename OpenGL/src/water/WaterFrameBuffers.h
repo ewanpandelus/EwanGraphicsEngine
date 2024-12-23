@@ -5,10 +5,10 @@ class WaterFrameBuffers
 
 protected:
 
-	const static int REFLECTION_WIDTH = 320;
-    const static int REFLECTION_HEIGHT = 180;
-	const static int REFRACTION_WIDTH = 1280;
-	const static int REFRACTION_HEIGHT = 720;
+	const static int REFLECTION_WIDTH = 1920;
+    const static int REFLECTION_HEIGHT = 1080;
+	const static int REFRACTION_WIDTH = 1920;
+	const static int REFRACTION_HEIGHT = 1080;
 
 public:
 	void initialise();
@@ -60,7 +60,7 @@ private:
 	 GLuint textureColorbuffer;
 	 GLuint renderBufferObject;
 
-	 const unsigned int SCR_WIDTH = 800;
-	 const unsigned int SCR_HEIGHT = 600;
+	 const unsigned int SCR_WIDTH = 1920;
+	 const unsigned int SCR_HEIGHT = 1080;
 };
 

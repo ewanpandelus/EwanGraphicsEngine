@@ -33,7 +33,7 @@ public:
 
 
 private:
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 	glm::mat4 m_currentView;
 
 	// Lighting 
@@ -67,9 +67,9 @@ private:
 	glm::mat4 treeModel = glm::mat4(1.0f);
 
 
-	// TEMP
-
-	float quadVertices[24];// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+	unsigned int cubeVAO, cubeVBO;
+	unsigned int planeVAO, planeVBO;
+	// screen quad VAO
 	unsigned int quadVAO, quadVBO;
 	//
 };

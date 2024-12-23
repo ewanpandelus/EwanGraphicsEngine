@@ -52,13 +52,23 @@ void main()
 	reflectTexCoords  = clamp(reflectTexCoords, 0.001,0.999);
 
 
+	float near = 0.1; 
+    float far  = 1000.0; 
+    float depth = texture(refractionTexture, refractTexCoords).r;
 
+	float eye_z = near * far / ((depth * (far - near)) - far);
+	float floorDistance = ( eye_z - (-near) ) / ( -far - (-near) );
+	
+	depth = gl_FragCoord.z;
+	eye_z = near * far / ((depth * (far - near)) - far);
+	float waterDistance = ( eye_z - (-near) ) / ( -far - (-near) );
 
+	float waterDepth = floorDistance - waterDistance;
 
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 
-	vec4 outColour = mix(reflectColour, refractColour, 0.5);
+	vec4 outColour = mix(reflectColour, vec4(waterDepth/2, waterDepth/2, waterDepth/2, 1), 1);
 
 	float nDot1 = dot(norm, vec3(0.5, 1, 1));
 	float brightness = max(nDot1, 0.0);
