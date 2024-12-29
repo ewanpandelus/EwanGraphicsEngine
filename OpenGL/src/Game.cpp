@@ -76,7 +76,6 @@ void Game::render()
 
 
     waterFrameBuffers.unbindCurrentFrameBuffer();
-    glEnable(GL_ALPHA_TEST);
     renderer.prepare(camera.getView());
 
 
@@ -91,7 +90,7 @@ void Game::render()
     glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
     renderer.renderOpaqueObjects();
-    renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionDepthTexture());
+    renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
 }
 
 void Game::cleanUp()

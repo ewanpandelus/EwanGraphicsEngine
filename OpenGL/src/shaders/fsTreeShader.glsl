@@ -21,9 +21,10 @@ void main()
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
 
+	vec4 colour = vec4(0.42, 0.31, 0.22, 1);
 	float nDot1 = dot(norm, vec3(0.5, 1, 1));
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,1);
 	vec4 result = clamp(ambient+diffuse, 0, 1);
-	FragColor = result; //vec4(norm, 1);
+	FragColor = result * colour; //vec4(norm, 1);
 };

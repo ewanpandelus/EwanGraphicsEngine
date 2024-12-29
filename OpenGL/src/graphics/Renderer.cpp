@@ -39,6 +39,8 @@ void Renderer::initialise()
     Model tree;
     tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
 
+    boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
+
     terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
     waterModel = glm::translate(waterModel, glm::vec3(25,6,25));
 
@@ -179,11 +181,17 @@ void Renderer::renderOpaqueObjects()
     shader.setMatrix4("model", glm::mat4(1.0f));
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+    treeShader.activate();
+    treeShader.setMatrix4("view", m_currentView);
+    treeShader.setMatrix4("projection", projection);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(400.0f, 2.0f, 700.0f));
+    treeShader.setMatrix4("model", model);
+    boatModel.render();
 }
 
 void Renderer::renderRefractionPass()
 {
-    glEnable(GL_CLIP_DISTANCE0);
     terrainShader.activate();
     terrainShader.setVector4("plane", glm::vec4(0, -1, 0, 6));
     terrainShader.setMatrix4("view", m_currentView);
@@ -203,7 +211,7 @@ void Renderer::renderReflectionPass()
     renderOpaqueObjects();
 }
 
-void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture)
+void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture, unsigned int depthTexture)
 {
     waterShader.activate();
     waterShader.setMatrix4("model", glm::mat4(1.0f));
@@ -221,6 +229,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.setInt("reflectionTexture", 0);
     waterShader.setInt("refractionTexture", 1);
     waterShader.setInt("dudvMap", 2);
+    waterShader.setInt("depthTexture", 3);
+
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
@@ -228,6 +238,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     glBindTexture(GL_TEXTURE_2D, refractionTexture);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, dudvMap);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water->render();
     glDepthMask(true); //disable z-testing

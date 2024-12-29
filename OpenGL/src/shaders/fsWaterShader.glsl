@@ -16,15 +16,17 @@ uniform vec4 lightColour;
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
+uniform sampler2D depthTexture;
 uniform float time;
 
 
-const float waveStrength = 0.02f;
-float waterSpeed = 0.05f;
+const float waveStrength = 0.011f;
+float waterSpeed = 0.025f;
 
 void main()
 {
-	vec4 waterColour = vec4(0.55, 0.97, 0.98, 1);
+	vec4 waterColour1 = vec4(0.5, 0.97, 0.98, 1);
+	vec4 waterColour2 = vec4(0.0, 0,0.002,1);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
@@ -35,6 +37,32 @@ void main()
 	vec2 ndc = (clipSpace.xy/clipSpace.w) / 2 + 0.5;
 	vec2 refractTexCoords = vec2(ndc.x, ndc.y);
 	vec2 reflectTexCoords = vec2(ndc.x, 1 -ndc.y);
+
+
+	float near = 0.1; 
+    float far  = 1000.0; 
+    float depth = texture(depthTexture, refractTexCoords).r;
+	
+	
+
+	float eye_z = near * far / ((depth * (far - near)) - far);
+	float floorDistance = ( eye_z - (-near) ) / ( -far - (-near) );
+	
+
+	depth = gl_FragCoord.z;
+	eye_z = near * far / ((depth * (far - near)) - far);
+	float waterDistance = ( eye_z - (-near) ) / ( -far - (-near) );
+
+
+
+	float depthMultiplier = 2;
+	float alpha = 1;
+
+	float waterDepth = (floorDistance - waterDistance) * depthMultiplier;	
+	alpha = waterDepth*5;
+	
+	vec4 waterColour = mix(waterColour1, waterColour2, clamp(waterDepth, 0,1));
+
 
 	vec2 scaledTexCoords = TexCoord * 6;
 
@@ -52,28 +80,18 @@ void main()
 	reflectTexCoords  = clamp(reflectTexCoords, 0.001,0.999);
 
 
-	float near = 0.1; 
-    float far  = 1000.0; 
-    float depth = texture(refractionTexture, refractTexCoords).r;
-
-	float eye_z = near * far / ((depth * (far - near)) - far);
-	float floorDistance = ( eye_z - (-near) ) / ( -far - (-near) );
-	
-	depth = gl_FragCoord.z;
-	eye_z = near * far / ((depth * (far - near)) - far);
-	float waterDistance = ( eye_z - (-near) ) / ( -far - (-near) );
-
-	float waterDepth = floorDistance - waterDistance;
-
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 
-	vec4 outColour = mix(reflectColour, vec4(waterDepth/2, waterDepth/2, waterDepth/2, 1), 1);
+	vec4 outColour = mix(reflectColour, refractColour, 0.5);
+	outColour =  mix(outColour, waterColour, 0.3);
+	
+	outColour.a = alpha;
+
 
 	float nDot1 = dot(norm, vec3(0.5, 1, 1));
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,0.5);
 	
-    FragColor = mix(outColour, waterColour, 0.2);
-
+    FragColor = outColour;
 };

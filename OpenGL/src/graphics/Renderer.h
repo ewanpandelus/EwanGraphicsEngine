@@ -25,7 +25,7 @@ public:
 
 	void renderReflectionPass();
 
-	void renderWater(unsigned int reflectionTexture, unsigned int refractionTexture);
+	void renderWater(unsigned int reflectionTexture, unsigned int refractionTexture, unsigned int depthTexture);
 
 	void renderToScreen(unsigned int textureToBind);
 
@@ -59,6 +59,7 @@ private:
 
 
 	Model monkeyModel;
+	Model boatModel;
 	Model tree;
 
 	// Environment Model Matrices
