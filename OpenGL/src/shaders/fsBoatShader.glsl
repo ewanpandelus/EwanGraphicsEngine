@@ -8,7 +8,6 @@ in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec2 TexCoord;
 
-
 uniform vec4 tryColor; // we set this variable in the OpenGL code.
 uniform vec4 lightColour;
 

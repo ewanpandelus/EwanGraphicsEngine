@@ -10,6 +10,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 transform;
 uniform vec3 lightPosition;
+uniform vec4 clippingPlane;
 
 out vec3 ourColor;
 out vec3 surfaceNormal;
@@ -21,6 +22,7 @@ out vec3 FragPos;
 void main()
 {
    vec4 worldPosition = model * vec4(aPos, 1.0);
+   gl_ClipDistance[0] = dot(worldPosition, clippingPlane);
    gl_Position = projection * view * model * vec4(aPos, 1.0);
    FragPos = vec3(model * vec4(aPos, 1.0));
    ourColor = vec3(1,1,1); // set ourColor to the input color we got from the vertex data

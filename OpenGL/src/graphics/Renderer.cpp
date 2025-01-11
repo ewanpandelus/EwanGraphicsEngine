@@ -28,9 +28,9 @@ void Renderer::initialise()
     waterShader.setMatrix4("projection", projection);
 
 
-    treeShader.initialise("src/shaders/vsTreeShader.glsl", "src/shaders/fsTreeShader.glsl");
-    treeShader.activate();
-    treeShader.setMatrix4("projection", projection);
+    boatShader.initialise("src/shaders/vsBoatShader.glsl", "src/shaders/fsBoatShader.glsl");
+    boatShader.activate();
+    boatShader.setMatrix4("projection", projection);
 
 
     terrain = new Terrain(glm::vec3(0, 1, 0), 256, 4);
@@ -155,7 +155,7 @@ void Renderer::initialise()
 
 }
 
-void Renderer::renderOpaqueObjects()
+void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 {
 
     terrainShader.activate();
@@ -181,34 +181,38 @@ void Renderer::renderOpaqueObjects()
     shader.setMatrix4("model", glm::mat4(1.0f));
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
-    treeShader.activate();
-    treeShader.setMatrix4("view", m_currentView);
-    treeShader.setMatrix4("projection", projection);
+
+    boatShader.activate();
+    boatShader.setMatrix4("view", m_currentView);
+    boatShader.setMatrix4("projection", projection);
+    boatShader.setVector4("clippingPlane", clippingPlane);
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(400.0f, 2.0f, 700.0f));
-    treeShader.setMatrix4("model", model);
+    boatShader.setMatrix4("model", model);
     boatModel.render();
 }
 
 void Renderer::renderRefractionPass()
 {
     terrainShader.activate();
-    terrainShader.setVector4("plane", glm::vec4(0, -1, 0, 6));
+    glm::vec4 clippingPlane = glm::vec4(0, -1, 0, 6);
+    terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("view", m_currentView);
     terrainShader.setVector4("lightColour", light.getLightColour());
     terrainShader.setMatrix4("model", terrainModel);
-    renderOpaqueObjects();
+    renderOpaqueObjects(clippingPlane);
 }
 
 void Renderer::renderReflectionPass()
 {
     glEnable(GL_CLIP_DISTANCE0);
+    glm::vec4 clippingPlane = glm::vec4(0, 1, 0, -6);
     terrainShader.activate();
     terrainShader.setMatrix4("view", m_currentView);
     terrainShader.setVector3("lightPosition", glm::vec3(1,1,0));
-    terrainShader.setVector4("plane", glm::vec4(0, 1, 0, -6));
+    terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("model", terrainModel);
-    renderOpaqueObjects();
+    renderOpaqueObjects(clippingPlane);
 }
 
 void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture, unsigned int depthTexture)
@@ -221,11 +225,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.setMatrix4("model", waterModel);
     waterShader.setFloat("time", glfwGetTime()) ;
     
- 
-
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
-
     waterShader.setInt("reflectionTexture", 0);
     waterShader.setInt("refractionTexture", 1);
     waterShader.setInt("dudvMap", 2);

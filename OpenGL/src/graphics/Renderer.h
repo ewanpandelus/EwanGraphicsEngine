@@ -19,7 +19,7 @@ public:
 
 	void initialise();
 
-	void renderOpaqueObjects();
+	void renderOpaqueObjects(glm::vec4 clippingPlane);
 
 	void renderRefractionPass();
 
@@ -42,7 +42,7 @@ private:
 	// Shaders 
 
 	Shader terrainShader;
-	Shader treeShader;
+	Shader boatShader;
 	Shader screenShader;
 	Shader shader;
 	Shader waterShader;

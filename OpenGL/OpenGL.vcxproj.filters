@@ -132,7 +132,7 @@
     <None Include="src\shaders\fsStandard.glsl" />
     <None Include="src\shaders\fsWaterShader.glsl" />
     <None Include="src\shaders\vsWaterShader.glsl" />
-    <None Include="src\shaders\fsTreeShader.glsl" />
-    <None Include="src\shaders\vsTreeShader.glsl" />
+    <None Include="src\shaders\fsBoatShader.glsl" />
+    <None Include="src\shaders\vsBoatShader.glsl" />
   </ItemGroup>
 </Project>

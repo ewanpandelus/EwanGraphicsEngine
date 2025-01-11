@@ -89,7 +89,7 @@ void Game::render()
     //}
     glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
-    renderer.renderOpaqueObjects();
+    renderer.renderOpaqueObjects(glm::vec4(0,0,0,0));
     renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
 }
 

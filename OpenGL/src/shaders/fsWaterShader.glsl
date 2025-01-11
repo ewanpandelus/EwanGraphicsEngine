@@ -20,7 +20,7 @@ uniform sampler2D depthTexture;
 uniform float time;
 
 
-const float waveStrength = 0.011f;
+const float waveStrength = 0.005f;
 float waterSpeed = 0.025f;
 
 void main()
@@ -59,7 +59,7 @@ void main()
 	float alpha = 1;
 
 	float waterDepth = (floorDistance - waterDistance) * depthMultiplier;	
-	alpha = waterDepth*5;
+	alpha = waterDepth*4;
 	
 	vec4 waterColour = mix(waterColour1, waterColour2, clamp(waterDepth, 0,1));
 
