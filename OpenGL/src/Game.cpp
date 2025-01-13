@@ -9,16 +9,8 @@ Game::Game()
 void Game::initialise(int width, int height, GLFWwindow* window)
 { 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-
     renderer.initialise();
     waterFrameBuffers.initialise();
-
-    treePositions.push_back(glm::vec3(5, 5, 100));
-    treePositions.push_back(glm::vec3(100, 5, 5));
-    treePositions.push_back(glm::vec3(100, 5, 100));
-    treePositions.push_back(glm::vec3(50, 5, 50));
-    treePositions.push_back(glm::vec3(30, 5, 15));
 }
 
 void Game::tick(GLFWwindow* window)
@@ -89,6 +81,7 @@ void Game::render()
     //}
     glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
+    glEnable(GL_DEPTH_TEST);
     renderer.renderOpaqueObjects(glm::vec4(0,0,0,0));
     renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
 }

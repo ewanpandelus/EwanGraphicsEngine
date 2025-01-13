@@ -26,7 +26,7 @@ float waterSpeed = 0.025f;
 void main()
 {
 	vec4 waterColour1 = vec4(0.5, 0.97, 0.98, 1);
-	vec4 waterColour2 = vec4(0.0, 0,0.002,1);
+	vec4 waterColour2 = vec4(0.06, 0.06,0.2,1);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
@@ -42,6 +42,7 @@ void main()
 	float near = 0.1; 
     float far  = 1000.0; 
     float depth = texture(depthTexture, refractTexCoords).r;
+
 	
 	
 
@@ -55,13 +56,13 @@ void main()
 
 
 
-	float depthMultiplier = 2;
-	float alpha = 1;
+	float depthMultiplier = 35;
+	float alphaMultiplier = 100;
 
-	float waterDepth = (floorDistance - waterDistance) * depthMultiplier;	
-	alpha = waterDepth*4;
-	
-	vec4 waterColour = mix(waterColour1, waterColour2, clamp(waterDepth, 0,1));
+	float waterDepth = (floorDistance - waterDistance);
+	float opticalDepth01 = 1 - exp(-waterDepth * depthMultiplier);
+	float alpha = 1 - exp(-waterDepth * alphaMultiplier);
+	vec4 waterColour = mix(waterColour1, waterColour2, opticalDepth01);
 
 
 	vec2 scaledTexCoords = TexCoord * 6;
@@ -83,8 +84,8 @@ void main()
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 
-	vec4 outColour = mix(reflectColour, refractColour, 0.5);
-	outColour =  mix(outColour, waterColour, 0.3);
+	vec4 outColour = mix(reflectColour, refractColour, 0.2);
+	outColour =  mix(outColour, waterColour, 0.6);
 	
 	outColour.a = alpha;
 

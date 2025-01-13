@@ -39,11 +39,5 @@ private:
     
     // FrameBufferObjects 
     WaterFrameBuffers waterFrameBuffers;
-
-    std::vector<glm::vec3> treePositions;
-
-    // --------------------------------------- TEMP - TO CLEAN
-    glm::mat4 waterModel = glm::mat4(1.0f);
-
 };
 

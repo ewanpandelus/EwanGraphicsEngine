@@ -85,7 +85,7 @@ void main()
 	vec3 norm = normalize(Normal);
 	vec3 unitLightVector = normalize(toLightVector);
 	float slope = 1-norm.y;
-	float noiseFreq = 0.033f;
+	float noiseFreq = 0.05f;
 
 	vec4 sandColour = vec4(0.96,0.95,0.73,1);
 	vec4 grassColour = vec4(0.3,0.6,0.4,1);
@@ -99,7 +99,7 @@ void main()
 
 	vec4 terrainColour = vec4(0,0,0,0);
 	
-	float yPosWithNoise = vertexPos.y+snoise(vec2(vertexPos.x *noiseFreq, vertexPos.z *noiseFreq));
+	float yPosWithNoise = vertexPos.y + snoise(vec2(vertexPos.x *noiseFreq, vertexPos.z *noiseFreq));
 
 	if(yPosWithNoise < 5)
 	{

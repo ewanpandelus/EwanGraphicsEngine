@@ -157,7 +157,6 @@ void Renderer::initialise()
 
 void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 {
-
     terrainShader.activate();
     terrain->render();
     shader.activate();
@@ -189,7 +188,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(400.0f, 2.0f, 700.0f));
     boatShader.setMatrix4("model", model);
-    boatModel.render();
+  //  boatModel.render();
 }
 
 void Renderer::renderRefractionPass()
