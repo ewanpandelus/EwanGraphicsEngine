@@ -87,6 +87,8 @@ void main()
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 
+//	vec3 normal = vec3(normalMapColour * 2.0 - 1.0, normalMapColour.b, normalMapColour.g);
+
 	vec4 outColour = mix(reflectColour, refractColour, 0.2);
 	outColour =  mix(outColour, waterColour, 0.6);
 	

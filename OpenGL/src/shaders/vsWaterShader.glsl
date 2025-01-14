@@ -10,6 +10,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 transform;
 uniform vec3 lightPosition;
+uniform vec3 cameraPosition;
 
 out vec3 ourColor;
 out vec3 surfaceNormal;
