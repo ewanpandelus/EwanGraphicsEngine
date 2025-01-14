@@ -231,6 +231,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.setInt("refractionTexture", 1);
     waterShader.setInt("dudvMap", 2);
     waterShader.setInt("depthTexture", 3);
+    waterShader.setInt("normalMap", 4);
+
 
 
     glActiveTexture(GL_TEXTURE0);
@@ -241,6 +243,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     glBindTexture(GL_TEXTURE_2D, dudvMap);
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, depthTexture);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, normalMap);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water->render();
     glDepthMask(true); //disable z-testing

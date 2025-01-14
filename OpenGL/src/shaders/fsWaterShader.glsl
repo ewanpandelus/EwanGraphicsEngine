@@ -21,8 +21,8 @@ uniform sampler2D normalMap;
 uniform float time;
 
 
-const float waveStrength = 0.005f;
-float waterSpeed = 0.025f;
+const float waveStrength = 0.2f;
+float waterSpeed = 0.06f;
 
 void main()
 {
@@ -59,19 +59,20 @@ void main()
 
 	float depthMultiplier = 60;
 	float alphaMultiplier = 60;
+	float distortionMultplier = 8;
 
 	float waterDepth = (floorDistance - waterDistance);
 	float opticalDepth01 = 1 - exp(-waterDepth * depthMultiplier);
 	float alpha = 1 - exp(-waterDepth * alphaMultiplier);
+	float disortionDepthMultiplier =  1 - exp(-waterDepth * distortionMultplier);
 	vec4 waterColour = mix(waterColour1, waterColour2, opticalDepth01);
 
 
 	vec2 scaledTexCoords = TexCoord * 6;
 
-	vec2 distortion1 = texture(dudvMap, vec2(scaledTexCoords.x + waterSpeed, scaledTexCoords.y)).rg * 2.0 - 1.0;
-	vec2 distortion2 = texture(dudvMap, vec2(-scaledTexCoords.x, scaledTexCoords.y + waterSpeed)).rg * 2.0 - 1.0;
-
-	vec2 totalDistortion = distortion1 + distortion2; 
+	vec2 distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + waterSpeed, scaledTexCoords.y)).rg*0.1;
+	distortedTexCoords = scaledTexCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+waterSpeed);
+	vec2 totalDistortion = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * disortionDepthMultiplier;
 
 	totalDistortion *= waveStrength;
 
@@ -84,6 +85,7 @@ void main()
 
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
+	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 
 	vec4 outColour = mix(reflectColour, refractColour, 0.2);
 	outColour =  mix(outColour, waterColour, 0.6);
