@@ -23,12 +23,12 @@ void WaterFrameBuffers::cleanUp()
 
 void WaterFrameBuffers::bindReflectionFrameBuffer()
 {
-	bindFrameBuffer(reflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+	bindFrameBuffer(reflectionFrameBuffer, SCR_WIDTH, SCR_HEIGHT);
 }
 
 void WaterFrameBuffers::bindRefractionFrameBuffer()
 {
-	bindFrameBuffer(refractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+	bindFrameBuffer(refractionFrameBuffer, SCR_WIDTH, SCR_HEIGHT);
 }
 
 void WaterFrameBuffers::unbindCurrentFrameBuffer()
@@ -54,16 +54,16 @@ int WaterFrameBuffers::getRefractionDepthTexture()
 void WaterFrameBuffers::initialiseReflectionFrameBuffer()
 {
 	reflectionFrameBuffer = createFrameBuffer();
-	reflectionTexture = createTextureAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
-	reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH, REFLECTION_HEIGHT);
+	reflectionTexture = createTextureAttachment(SCR_WIDTH, SCR_HEIGHT);
+	reflectionDepthBuffer = createDepthBufferAttachment(SCR_WIDTH, SCR_HEIGHT);
 	unbindCurrentFrameBuffer();
 }
 
 void WaterFrameBuffers::initialiseRefractionFrameBuffer()
 {
 	refractionFrameBuffer = createFrameBuffer();
-	refractionTexture = createTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
-	refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH, REFRACTION_HEIGHT);
+	refractionTexture = createTextureAttachment(SCR_WIDTH, SCR_HEIGHT);
+	refractionDepthTexture = createDepthTextureAttachment(SCR_WIDTH, SCR_HEIGHT);
 	unbindCurrentFrameBuffer();
 }
 

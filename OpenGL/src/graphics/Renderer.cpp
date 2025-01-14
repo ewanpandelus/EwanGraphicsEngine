@@ -52,6 +52,7 @@ void Renderer::initialise()
 
 
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
+    normalMap = TextureLoader::loadTexture("resources/textures/normalMap.png");
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -151,8 +152,6 @@ void Renderer::initialise()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-
 }
 
 void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
@@ -194,7 +193,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 void Renderer::renderRefractionPass()
 {
     terrainShader.activate();
-    glm::vec4 clippingPlane = glm::vec4(0, -1, 0, 6);
+    glm::vec4 clippingPlane = glm::vec4(0.f, -1.f, 0.f, 6.f);
     terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("view", m_currentView);
     terrainShader.setVector4("lightColour", light.getLightColour());
@@ -205,7 +204,7 @@ void Renderer::renderRefractionPass()
 void Renderer::renderReflectionPass()
 {
     glEnable(GL_CLIP_DISTANCE0);
-    glm::vec4 clippingPlane = glm::vec4(0, 1, 0, -6);
+    glm::vec4 clippingPlane = glm::vec4(0.f, 1.f, 0.f, -6.f);
     terrainShader.activate();
     terrainShader.setMatrix4("view", m_currentView);
     terrainShader.setVector3("lightPosition", glm::vec3(1,1,0));
@@ -226,6 +225,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     
     glDepthMask(false); //disable z-testing
     glEnable(GL_BLEND);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.f, 1.f);
     waterShader.setInt("reflectionTexture", 0);
     waterShader.setInt("refractionTexture", 1);
     waterShader.setInt("dudvMap", 2);
@@ -244,6 +245,7 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     water->render();
     glDepthMask(true); //disable z-testing
     glDisable(GL_BLEND);
+    glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 void Renderer::renderToScreen(unsigned int textureToBind)

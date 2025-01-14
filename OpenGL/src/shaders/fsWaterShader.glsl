@@ -17,6 +17,7 @@ uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
 uniform sampler2D depthTexture;
+uniform sampler2D normalMap;
 uniform float time;
 
 
@@ -40,7 +41,7 @@ void main()
 
 
 	float near = 0.1; 
-    float far  = 1000.0; 
+    float far  = 2000.0; 
     float depth = texture(depthTexture, refractTexCoords).r;
 
 	
@@ -56,8 +57,8 @@ void main()
 
 
 
-	float depthMultiplier = 35;
-	float alphaMultiplier = 100;
+	float depthMultiplier = 60;
+	float alphaMultiplier = 60;
 
 	float waterDepth = (floorDistance - waterDistance);
 	float opticalDepth01 = 1 - exp(-waterDepth * depthMultiplier);
@@ -78,7 +79,7 @@ void main()
 	refractTexCoords  = clamp(refractTexCoords, 0.001,0.999);
 
 	reflectTexCoords += totalDistortion;
-	reflectTexCoords  = clamp(reflectTexCoords, 0.001,0.999);
+    reflectTexCoords  = clamp(reflectTexCoords, 0.001,0.999);
 
 
 	vec4 reflectColour = texture(reflectionTexture, reflectTexCoords);
@@ -93,6 +94,5 @@ void main()
 	float nDot1 = dot(norm, vec3(0.5, 1, 1));
 	float brightness = max(nDot1, 0.0);
 	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,0.5);
-	
     FragColor = outColour;
 };
