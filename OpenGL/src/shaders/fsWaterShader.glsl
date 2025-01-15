@@ -98,7 +98,7 @@ const float normalMapSiftStrength = 0.5f;
 
 
 const float shineDamper = 30.0f;
-const float reflectivity = 10.f;
+const float reflectivity = 20.f;
 const float normalMapBlendNoiseFreq = 0.1f;
 
 void main()
@@ -112,23 +112,17 @@ void main()
 	waterSpeed *= time;
 	normalMapSiftSpeed *= time;
 
-
 	vec2 ndc = (clipSpace.xy/clipSpace.w) / 2 + 0.5;
 	vec2 refractTexCoords = vec2(ndc.x, ndc.y);
 	vec2 reflectTexCoords = vec2(ndc.x, 1 -ndc.y);
-
 
 	float near = 0.1; 
     float far  = 2000.0; 
     float depth = texture(depthTexture, refractTexCoords).r;
 
-	
-	
-
 	float eye_z = near * far / ((depth * (far - near)) - far);
 	float floorDistance = ( eye_z - (-near) ) / ( -far - (-near) );
 	
-
 	depth = gl_FragCoord.z;
 	eye_z = near * far / ((depth * (far - near)) - far);
 	float waterDistance = ( eye_z - (-near) ) / ( -far - (-near) );
@@ -179,7 +173,7 @@ void main()
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	float specular = max(dot(reflectedLight, viewVector), 0.0);
 	specular = pow(specular, shineDamper);
-	vec3 specularHighlights = lightColour * specular * reflectivity;
+	vec3 specularHighlights = lightColour * specular * reflectivity * disortionDepthMultiplier;
 
 
 	vec4 outColour = mix(reflectColour, refractColour, refractiveFactor);

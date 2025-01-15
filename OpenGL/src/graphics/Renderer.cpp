@@ -13,7 +13,7 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    light = Light(glm::vec3(0.0f, 100.0f, 50.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+    light = Light(glm::vec3(0.0f, 100.0f, 50.0f), glm::vec4(0.7f, 0.5f, 0.1f, 1.0f));
     terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
     waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
 
