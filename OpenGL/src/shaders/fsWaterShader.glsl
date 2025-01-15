@@ -4,21 +4,20 @@
 out vec4 FragColor;
 in vec3 FragPos;  
 in vec3 Normal;
-in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec2 TexCoord;
 in vec4 clipSpace;
 
-uniform vec4 tryColor; // we set this variable in the OpenGL code.
-uniform vec4 lightColour;
 
+uniform vec4 lightColour;
+uniform float time;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D dudvMap;
 uniform sampler2D depthTexture;
 uniform sampler2D normalMap;
-uniform float time;
+
 
 
 const float waveStrength = 0.2f;
@@ -87,7 +86,7 @@ void main()
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 
-//	vec3 normal = vec3(normalMapColour * 2.0 - 1.0, normalMapColour.b, normalMapColour.g);
+	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g);
 
 	vec4 outColour = mix(reflectColour, refractColour, 0.2);
 	outColour =  mix(outColour, waterColour, 0.6);

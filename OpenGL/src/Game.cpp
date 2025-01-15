@@ -10,6 +10,7 @@ void Game::initialise(int width, int height, GLFWwindow* window)
 { 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     renderer.initialise();
+    renderer.setCamera(& camera);
     waterFrameBuffers.initialise();
 }
 
@@ -41,17 +42,17 @@ void Game::render()
     camera.setCameraPos(cameraPos);
     camera.invertPitch();
 
-    // bind to framebuffer and draw scene as we normally would to color texture REFLECTION RENDER
-
+    // Bind to framebuffer and draw scene 
     waterFrameBuffers.bindReflectionFrameBuffer();
     glEnable(GL_DEPTH_TEST);
 
-    // make sure we clear the framebuffer's content
+    // Clear the framebuffer's content
     renderer.prepare(camera.getView());
 
-    // FIRST RENDER - REFLECTION
+    //// FIRST RENDER - REFLECTION
     renderer.renderReflectionPass();
 
+    // Unbind framebuffer and draw scene 
     waterFrameBuffers.unbindCurrentFrameBuffer();
     waterFrameBuffers.bindRefractionFrameBuffer();
     glEnable(GL_DEPTH_TEST);
@@ -70,15 +71,6 @@ void Game::render()
     waterFrameBuffers.unbindCurrentFrameBuffer();
     renderer.prepare(camera.getView());
 
-
-    //if (fmod(floor(totalTime), 2) == 1)
-    //{
-    //    renderer.renderToScreen(waterFrameBuffers.getRefractionDepthTexture());	// use the color attachment texture as the texture of the quad plane
-    //}
-    //else
-    //{
-    //    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-    //}
     glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
     glEnable(GL_DEPTH_TEST);
@@ -90,3 +82,13 @@ void Game::cleanUp()
 {
     //create shutDown for data types 
 }
+
+
+//if (fmod(floor(totalTime), 2) == 1)
+//{
+//    renderer.renderToScreen(waterFrameBuffers.getRefractionDepthTexture());	// use the color attachment texture as the texture of the quad plane
+//}
+//else
+//{
+//    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
+//}

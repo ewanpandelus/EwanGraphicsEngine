@@ -14,6 +14,8 @@ void Renderer::prepare(glm::mat4 currentView)
 void Renderer::initialise()
 {
     light = Light(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
+    waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
 
     shader.initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
     screenShader.initialise("src/shaders/vsScreen.glsl", "src/shaders/fsScreen.glsl");
@@ -21,11 +23,17 @@ void Renderer::initialise()
     terrainShader.initialise("src/shaders/vsTerrainShader.glsl", "src/shaders/fsTerrainShader.glsl");
     terrainShader.activate();
     terrainShader.setMatrix4("projection", projection);
-
+    terrainShader.setMatrix4("model", terrainModel);
 
     waterShader.initialise("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
     waterShader.activate();
     waterShader.setMatrix4("projection", projection);
+    waterShader.setMatrix4("model", waterModel);
+    waterShader.setInt("reflectionTexture", 0);
+    waterShader.setInt("refractionTexture", 1);
+    waterShader.setInt("dudvMap", 2);
+    waterShader.setInt("depthTexture", 3);
+    waterShader.setInt("normalMap", 4);
 
 
     boatShader.initialise("src/shaders/vsBoatShader.glsl", "src/shaders/fsBoatShader.glsl");
@@ -41,8 +49,11 @@ void Renderer::initialise()
 
     boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
 
-    terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
-    waterModel = glm::translate(waterModel, glm::vec3(25,6,25));
+
+
+
+
+
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -160,7 +171,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     terrain->render();
     shader.activate();
     glm::mat4 model = glm::mat4(1.0f);
-    shader.setMatrix4("view", m_currentView);
+    shader.setMatrix4("view", camera->getView());
     shader.setMatrix4("projection", projection);
     // cubes
     glBindVertexArray(cubeVAO);
@@ -181,7 +192,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     glBindVertexArray(0);
 
     boatShader.activate();
-    boatShader.setMatrix4("view", m_currentView);
+    boatShader.setMatrix4("view", camera->getView());
     boatShader.setMatrix4("projection", projection);
     boatShader.setVector4("clippingPlane", clippingPlane);
     model = glm::mat4(1.0f);
@@ -195,7 +206,7 @@ void Renderer::renderRefractionPass()
     terrainShader.activate();
     glm::vec4 clippingPlane = glm::vec4(0.f, -1.f, 0.f, 6.f);
     terrainShader.setVector4("clippingPlane", clippingPlane);
-    terrainShader.setMatrix4("view", m_currentView);
+    terrainShader.setMatrix4("view", camera->getView());
     terrainShader.setVector4("lightColour", light.getLightColour());
     terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects(clippingPlane);
@@ -206,34 +217,24 @@ void Renderer::renderReflectionPass()
     glEnable(GL_CLIP_DISTANCE0);
     glm::vec4 clippingPlane = glm::vec4(0.f, 1.f, 0.f, -6.f);
     terrainShader.activate();
-    terrainShader.setMatrix4("view", m_currentView);
+    terrainShader.setMatrix4("view", camera->getView());
     terrainShader.setVector3("lightPosition", glm::vec3(1,1,0));
     terrainShader.setVector4("clippingPlane", clippingPlane);
-    terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects(clippingPlane);
 }
 
 void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refractionTexture, unsigned int depthTexture)
 {
-    waterShader.activate();
-    waterShader.setMatrix4("model", glm::mat4(1.0f));
-    waterShader.setMatrix4("view", m_currentView);
-    waterShader.setVector3("lightPosition", light.getLightPosition());
-    waterShader.setVector4("lightColour", light.getLightColour());
-    waterShader.setMatrix4("model", waterModel);
-    waterShader.setFloat("time", glfwGetTime()) ;
-    
-    glDepthMask(false); //disable z-testing
+    glDepthMask(false); 
     glEnable(GL_BLEND);
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.f, 1.f);
-    waterShader.setInt("reflectionTexture", 0);
-    waterShader.setInt("refractionTexture", 1);
-    waterShader.setInt("dudvMap", 2);
-    waterShader.setInt("depthTexture", 3);
-    waterShader.setInt("normalMap", 4);
 
-
+    waterShader.activate();
+    waterShader.setMatrix4("view", camera->getView());
+    waterShader.setVector3("lightPosition", light.getLightPosition());
+    waterShader.setVector4("lightColour", light.getLightColour());
+    waterShader.setFloat("time", glfwGetTime()) ;
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
@@ -247,6 +248,7 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     glBindTexture(GL_TEXTURE_2D, normalMap);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water->render();
+
     glDepthMask(true); //disable z-testing
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_OFFSET_FILL);
