@@ -14,8 +14,11 @@ uniform vec3 cameraPosition;
 
 out vec3 Normal;
 out vec3 toLightVector;
+out vec3 fromLightVector;
+out vec3 toCameraVector;
 out vec2 TexCoord;
 out vec4 clipSpace;
+out vec3 worldPos;
 
 out vec3 FragPos;  
 void main()
@@ -25,6 +28,9 @@ void main()
    gl_Position = clipSpace;
    FragPos = vec3(model * vec4(aPos, 1.0));
    toLightVector = lightPosition - worldPosition.xyz;
+   fromLightVector = worldPosition.xyz - lightPosition;
+   toCameraVector = cameraPosition - worldPosition.xyz;
+   worldPos = worldPosition.xyz;
    Normal = aNormal;
    TexCoord = aTexCoord;
 };

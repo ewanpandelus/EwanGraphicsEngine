@@ -7,7 +7,7 @@
 class Light
 {
 public:
-    Light(glm::vec3 _lightPosition, glm::vec4 _lightColour) 
+    Light(glm::vec3 _lightPosition, glm::vec3 _lightColour) 
     {
         lightPosition = _lightPosition;
         lightColour = _lightColour;
@@ -16,13 +16,13 @@ public:
     Light() = default;
 
     void SetLightPosition(glm::vec3 _lightPosition) { lightPosition = _lightPosition; }
-    void SetLightColour(glm::vec4 _lightColour) { lightColour = _lightColour; }
+    void SetLightColour(glm::vec3 _lightColour) { lightColour = _lightColour; }
 
 
     glm::vec3 getLightPosition() {return lightPosition;}
-    glm::vec4 getLightColour() {return lightColour; }
+    glm::vec3 getLightColour() {return lightColour; }
 
 protected:
     glm::vec3 lightPosition{0};
-    glm::vec4 lightColour{ 1.0f,1.0f,1.0f,0.0f};
+    glm::vec3 lightColour{ 1.0f,1.0f,1.0f};
 };

@@ -13,7 +13,7 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    light = Light(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    light = Light(glm::vec3(0.0f, 100.0f, 50.0f), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
     terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
     waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
 
@@ -46,14 +46,7 @@ void Renderer::initialise()
     monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
     Model tree;
     tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
-
     boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
-
-
-
-
-
-
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -61,9 +54,8 @@ void Renderer::initialise()
     screenShader.activate();
     screenShader.setInt("screenTexture", 0);
 
-
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
-    normalMap = TextureLoader::loadTexture("resources/textures/normalMap.png");
+    normalMap = TextureLoader::loadTexture("resources/textures/highResNormalMap.png");
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -207,7 +199,7 @@ void Renderer::renderRefractionPass()
     glm::vec4 clippingPlane = glm::vec4(0.f, -1.f, 0.f, 6.f);
     terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("view", camera->getView());
-    terrainShader.setVector4("lightColour", light.getLightColour());
+    terrainShader.setVector3("lightColour", light.getLightColour());
     terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects(clippingPlane);
 }
@@ -233,8 +225,9 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
     waterShader.activate();
     waterShader.setMatrix4("view", camera->getView());
     waterShader.setVector3("lightPosition", light.getLightPosition());
-    waterShader.setVector4("lightColour", light.getLightColour());
+    waterShader.setVector3("lightColour", light.getLightColour());
     waterShader.setFloat("time", glfwGetTime()) ;
+    waterShader.setVector3("cameraPosition", camera->getCameraPos());
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
