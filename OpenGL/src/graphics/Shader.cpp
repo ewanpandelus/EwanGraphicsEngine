@@ -67,6 +67,13 @@
      glUseProgram(ID);
  }
 
+ void Shader::setModelViewProjection(glm::mat4 model, glm::mat4 view, glm::mat4 projection)
+ {
+     setMatrix4("model", model);
+     setMatrix4("view", view);
+     setMatrix4("projection", projection);
+ }
+
  void Shader::setBool(const std::string& name, bool value)
 {
 

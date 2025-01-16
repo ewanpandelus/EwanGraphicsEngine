@@ -11,6 +11,7 @@
 #include "TextureLoader.h"
 #include "../water/Water.h"
 #include "../Camera.h"
+#include "Primitives.h"
 
 class Renderer
 {
@@ -40,8 +41,6 @@ private:
 
 	Camera* camera;
 
-
-
 	// Lighting 
 	Light light;
 
@@ -62,7 +61,9 @@ private:
 	// Environment
 	Water* water{};
 	Terrain* terrain{};
-
+	
+	// Primitives
+	Cube cube{ glm::vec3(0,10,0) };
 
 
 	Model monkeyModel;
@@ -75,7 +76,6 @@ private:
 	glm::mat4 treeModel = glm::mat4(1.0f);
 
 
-	unsigned int cubeVAO, cubeVBO;
 	unsigned int planeVAO, planeVBO;
 	// screen quad VAO
 	unsigned int quadVAO, quadVBO;
