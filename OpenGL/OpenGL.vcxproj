@@ -177,11 +177,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\fsScreen.glsl" />
+    <None Include="src\shaders\fsSkybox.glsl" />
     <None Include="src\shaders\fsTerrainShader.glsl" />
     <None Include="src\shaders\fsStandard.glsl" />
     <None Include="src\shaders\fsBoatShader.glsl" />
     <None Include="src\shaders\fsWaterShader.glsl" />
     <None Include="src\shaders\vsScreen.glsl" />
+    <None Include="src\shaders\vsSkybox.glsl" />
     <None Include="src\shaders\vsTerrainShader.glsl" />
     <None Include="src\shaders\vsStandard.glsl" />
     <None Include="src\shaders\vsBoatShader.glsl" />

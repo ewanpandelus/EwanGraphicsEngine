@@ -54,6 +54,23 @@ void Renderer::initialise()
     screenShader.activate();
     screenShader.setInt("screenTexture", 0);
 
+    skyboxCube.getShader()->initialise("src/shaders/vsSkybox.glsl", "src/shaders/fsSkybox.glsl");
+    skyboxCube.getShader()->setMatrix4("projection", projection);
+    skyboxCube.getShader()->setInt("cubeMap", 0);
+    skyboxCube.generateBuffers();
+
+
+    std::vector<std::string> skyBoxFaces
+    {
+        "resources/textures/right.png",
+        "resources/textures/left.png",
+        "resources/textures/bottom.png",
+        "resources/textures/bottom.png",
+        "resources/textures/front.png",
+        "resources/textures/back.png"
+    };
+
+    skyBoxTexture = TextureLoader::loadCubeMapTexture(skyBoxFaces);
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
     normalMap = TextureLoader::loadTexture("resources/textures/highResNormalMap.png");
 
@@ -82,8 +99,7 @@ void Renderer::initialise()
          1.0f,  1.0f,  1.0f, 1.0f
     };
     
-    cube.getShader()->initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
-    cube.generateBuffers();
+
 
     glGenVertexArrays(1, &planeVAO);
     glGenBuffers(1, &planeVBO);
@@ -110,14 +126,25 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 {
     terrainShader.activate();
     terrain->render();
-    cube.getShader()->activate();
-    cube.getShader()->setModelViewProjection(*cube.getModelMatrix(), camera->getView(), projection);
-    // cubes
-    cube.bindVertexArray();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, dudvMap);
-    cube.render();
+    skyboxCube.getShader()->activate();
+    skyboxCube.getShader()->setModelViewProjection(*skyboxCube.getModelMatrix(), camera->getView(), projection);
+    glm::mat4  viewMatrix = camera->getView();
+    viewMatrix[3][0] = 0;
+    viewMatrix[3][1] = 0;
+    viewMatrix[3][2] = 0;
 
+
+    skyboxCube.getShader()->setMatrix4("view", viewMatrix);
+    // cubes
+    skyboxCube.bindVertexArray();
+    //its the clipping plane!!!
+    glDepthMask(GL_FALSE);
+    glDepthRange(1.f, 1.f);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture);
+    skyboxCube.render();
+    glDepthRange(0.f, 1.f);
+    glDepthMask(GL_TRUE);
     // floor
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, dudvMap);

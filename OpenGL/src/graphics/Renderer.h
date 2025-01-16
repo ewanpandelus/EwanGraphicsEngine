@@ -53,8 +53,7 @@ private:
 	Shader waterShader;
 
 	// Textures
-	unsigned int cubeTexture;
-	unsigned int floorTexture;
+	unsigned int skyBoxTexture;
 	unsigned int dudvMap;
 	unsigned int normalMap;
 
@@ -63,7 +62,7 @@ private:
 	Terrain* terrain{};
 	
 	// Primitives
-	Cube cube{ glm::vec3(0,10,0) };
+	Cube skyboxCube{ glm::vec3(0,10,0) };
 
 
 	Model monkeyModel;
