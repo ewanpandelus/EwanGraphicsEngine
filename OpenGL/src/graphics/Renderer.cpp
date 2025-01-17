@@ -43,10 +43,10 @@ void Renderer::initialise()
 
     terrain = new Terrain(glm::vec3(0, 1, 0), 256, 4);
     water = new Water(256, 4);
-    monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
-    Model tree;
-    tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
-    boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
+    //monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
+    //Model tree;
+    //tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
+    //boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -126,25 +126,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 {
     terrainShader.activate();
     terrain->render();
-    skyboxCube.getShader()->activate();
-    skyboxCube.getShader()->setModelViewProjection(*skyboxCube.getModelMatrix(), camera->getView(), projection);
-    glm::mat4  viewMatrix = camera->getView();
-    viewMatrix[3][0] = 0;
-    viewMatrix[3][1] = 0;
-    viewMatrix[3][2] = 0;
 
-
-    skyboxCube.getShader()->setMatrix4("view", viewMatrix);
-    // cubes
-    skyboxCube.bindVertexArray();
-    //its the clipping plane!!!
-    glDepthMask(GL_FALSE);
-    glDepthRange(1.f, 1.f);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture);
-    skyboxCube.render();
-    glDepthRange(0.f, 1.f);
-    glDepthMask(GL_TRUE);
     // floor
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, dudvMap);
@@ -160,6 +142,16 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     model = glm::translate(model, glm::vec3(400.0f, 2.0f, 700.0f));
     boatShader.setMatrix4("model", model);
     boatModel.render();
+
+    glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+    skyboxCube.getShader()->activate();
+    skyboxCube.getShader()->setMatrix4("view", glm::mat3(camera->getView()));
+    skyboxCube.getShader()->setMatrix4("projection", projection);
+    skyboxCube.bindVertexArray();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture);
+    skyboxCube.render();
+    glDepthFunc(GL_LESS); // set depth function back to default
 }
 
 void Renderer::renderRefractionPass()
