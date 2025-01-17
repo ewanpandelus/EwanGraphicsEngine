@@ -70,12 +70,11 @@ float snoise(vec2 v)
 out vec4 FragColor;
 in vec3 FragPos;  
 in vec3 Normal;
-in vec3 toLightVector;
 in vec3 fromLightVector;
 in vec3 toCameraVector;
 in vec2 TexCoord;
 in vec4 clipSpace;
-in vec3 worldPos;
+
 
 
 uniform vec3 lightColour;
@@ -106,8 +105,6 @@ void main()
 	vec4 waterColour1 = vec4(0.5, 0.97, 0.98, 1);
 	vec4 waterColour2 = vec4(0.06, 0.06,0.2,1);
 	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
-	vec3 norm = normalize(Normal);
-	vec3 unitLightVector = normalize(toLightVector);
 
 	waterSpeed *= time;
 	normalMapSiftSpeed *= time;
@@ -180,5 +177,5 @@ void main()
 	outColour =  mix(outColour, waterColour, 0.6);
 	
 	outColour.a = alpha;
-    FragColor = outColour + vec4(specularHighlights, 0);
+    FragColor = outColour + vec4(specularHighlights, 0);//outColour + vec4(specularHighlights, 0);
 };

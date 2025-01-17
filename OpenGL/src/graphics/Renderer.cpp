@@ -13,7 +13,7 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    light = Light(glm::vec3(0.0f, 100.0f, 50.0f), glm::vec4(0.7f, 0.5f, 0.1f, 1.0f));
+    light = Light(glm::vec3(-530.0f, 100.f, -120.f), glm::vec4(0.79f, 0.791f, 1.0f, 1.0f));
     terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
     waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
 
@@ -60,19 +60,42 @@ void Renderer::initialise()
     skyboxCube.generateBuffers();
 
 
+    //std::vector<std::string> skyBoxFaces
+    //{
+    //    "resources/textures/right.png",
+    //    "resources/textures/left.png",
+    //    "resources/textures/top.png",
+    //    "resources/textures/bottom.png",
+    //    "resources/textures/front.png",
+    //    "resources/textures/back.png"
+    //};
+
+
+    //std::vector<std::string> skyBoxFaces
+    //{
+    //    "resources/textures/nLeft.png",
+    //    "resources/textures/nRight.png",
+    //    "resources/textures/nTop.png",
+    //    "resources/textures/nBottom.png",
+    //    "resources/textures/nFront.png",
+    //    "resources/textures/nBack.png"
+    //};
+
     std::vector<std::string> skyBoxFaces
     {
-        "resources/textures/right.png",
-        "resources/textures/left.png",
-        "resources/textures/bottom.png",
-        "resources/textures/bottom.png",
-        "resources/textures/front.png",
-        "resources/textures/back.png"
+        "resources/textures/cRight.png",
+        "resources/textures/cLeft.png",
+        "resources/textures/cTop.png",
+        "resources/textures/cBottom.png",
+        "resources/textures/cFront.png",
+        "resources/textures/cBack.png"
     };
 
     skyBoxTexture = TextureLoader::loadCubeMapTexture(skyBoxFaces);
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
     normalMap = TextureLoader::loadTexture("resources/textures/highResNormalMap.png");
+   
+
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
