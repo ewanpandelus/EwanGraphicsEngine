@@ -4,7 +4,7 @@
 class Primitive
 { 
 public:
-    Primitive(glm::vec3 initialPosition);
+    Primitive(glm::vec3 initialPosition, float scale);
 
     virtual void generateBuffers() = 0;
 
@@ -22,13 +22,15 @@ protected:
     glm::mat4 modelMatrix  = glm::mat4(1);
 
     Shader primitiveShader;
+    
+    float m_scale;
 };
 
 
 class Cube : public Primitive
 {
 public:
-    Cube(glm::vec3 initialPosition);
+    Cube(glm::vec3 initialPosition = glm::vec3(0,0,0), float scale = 1);
     
     virtual void generateBuffers();
 

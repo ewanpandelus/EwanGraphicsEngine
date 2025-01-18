@@ -76,7 +76,6 @@ in vec2 TexCoord;
 in vec4 clipSpace;
 
 
-
 uniform vec3 lightColour;
 uniform float time;
 
@@ -91,13 +90,13 @@ uniform sampler2D normalMap;
 const float waveStrength = 0.15f;
 float waterSpeed = 0.07f;
 
-float normalMapSiftSpeed = 0.07f;
+float normalMapSiftSpeed = 0.00f;
 
 const float normalMapSiftStrength = 0.5f;
 
 
-const float shineDamper = 30.0f;
-const float reflectivity = 20.f;
+const float shineDamper = 50.0f;
+const float reflectivity = 1.f;
 const float normalMapBlendNoiseFreq = 0.1f;
 
 void main()
@@ -140,7 +139,7 @@ void main()
 	vec2 scaledTexCoords = TexCoord * 50;
 	vec2 distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + normalMapSiftSpeed, scaledTexCoords.y)).rg*0.1;
 	distortedTexCoords = scaledTexCoords + (vec2(distortedTexCoords.x, distortedTexCoords.y+normalMapSiftSpeed) * normalMapSiftStrength);
-	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
+	vec4 normalMapColour = texture(normalMap, scaledTexCoords);
 
 	distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + waterSpeed, scaledTexCoords.y)).rg*0.1;
 	distortedTexCoords = scaledTexCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+waterSpeed);
@@ -164,7 +163,7 @@ void main()
 	vec4 refractColour = texture(refractionTexture, refractTexCoords);
 
 
-	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g);
+	vec3 normal = vec3(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0);
 	normal = normalize(normal);
 
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
@@ -176,6 +175,7 @@ void main()
 	vec4 outColour = mix(reflectColour, refractColour, refractiveFactor);
 	outColour =  mix(outColour, waterColour, 0.6);
 	
+
 	outColour.a = alpha;
-    FragColor = outColour + vec4(specularHighlights, 0);//outColour + vec4(specularHighlights, 0);
+    FragColor = outColour + vec4(specularHighlights, 0);
 };

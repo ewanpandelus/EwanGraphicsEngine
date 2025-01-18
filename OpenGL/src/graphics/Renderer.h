@@ -42,7 +42,7 @@ private:
 	Camera* camera;
 
 	// Lighting 
-	Light light;
+	Light moon;
 
 	// Shaders 
 
@@ -62,7 +62,8 @@ private:
 	Terrain* terrain{};
 	
 	// Primitives
-	Cube skyboxCube{ glm::vec3(0,10,0) };
+	Cube skyboxCube{};
+	Cube testCube{ glm::vec3(0,1200, 4990), 10};
 
 
 	Model monkeyModel;

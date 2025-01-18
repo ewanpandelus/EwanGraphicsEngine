@@ -5,71 +5,70 @@
 //// BASE PRIMITIVE ////
 
 
-Primitive::Primitive(glm::vec3 initialPosition)
+Primitive::Primitive(glm::vec3 initialPosition, float scale)
 {
     modelMatrix = glm::translate(modelMatrix, initialPosition);
+    m_scale = scale;
 }
 
 
 //// CUBE ////
 
-Cube::Cube(glm::vec3 initialPosition) :  Primitive(initialPosition)
+Cube::Cube(glm::vec3 initialPosition, float scale) :  Primitive(initialPosition, scale)
 {
 
 }
 
 void Cube::generateBuffers()
 {
-   static float SIZE = 500.f;
-
    float VERTICES[] = 
    {
-        -SIZE,  SIZE, -SIZE,
-        -SIZE, -SIZE, -SIZE,
-        SIZE, -SIZE, -SIZE,
-         SIZE, -SIZE, -SIZE,
-         SIZE,  SIZE, -SIZE,
-        -SIZE,  SIZE, -SIZE,
+        -m_scale,  m_scale, -m_scale,
+        -m_scale, -m_scale, -m_scale,
+        m_scale, -m_scale, -m_scale,
+         m_scale, -m_scale, -m_scale,
+         m_scale,  m_scale, -m_scale,
+        -m_scale,  m_scale, -m_scale,
 
 
-        -SIZE, -SIZE,  SIZE,
-        -SIZE, -SIZE, -SIZE,
-        -SIZE,  SIZE, -SIZE,
-        -SIZE,  SIZE, -SIZE,
-        -SIZE,  SIZE,  SIZE,
-        -SIZE, -SIZE,  SIZE,
+        -m_scale, -m_scale,  m_scale,
+        -m_scale, -m_scale, -m_scale,
+        -m_scale,  m_scale, -m_scale,
+        -m_scale,  m_scale, -m_scale,
+        -m_scale,  m_scale,  m_scale,
+        -m_scale, -m_scale,  m_scale,
 
 
-         SIZE, -SIZE, -SIZE,
-         SIZE, -SIZE,  SIZE,
-         SIZE,  SIZE,  SIZE,
-         SIZE,  SIZE,  SIZE,
-         SIZE,  SIZE, -SIZE,
-         SIZE, -SIZE, -SIZE,
+         m_scale, -m_scale, -m_scale,
+         m_scale, -m_scale,  m_scale,
+         m_scale,  m_scale,  m_scale,
+         m_scale,  m_scale,  m_scale,
+         m_scale,  m_scale, -m_scale,
+         m_scale, -m_scale, -m_scale,
 
 
-        -SIZE, -SIZE,  SIZE,
-        -SIZE,  SIZE,  SIZE,
-         SIZE,  SIZE,  SIZE,
-         SIZE,  SIZE,  SIZE,
-         SIZE, -SIZE,  SIZE,
-        -SIZE, -SIZE,  SIZE,
+        -m_scale, -m_scale,  m_scale,
+        -m_scale,  m_scale,  m_scale,
+         m_scale,  m_scale,  m_scale,
+         m_scale,  m_scale,  m_scale,
+         m_scale, -m_scale,  m_scale,
+        -m_scale, -m_scale,  m_scale,
 
 
-        -SIZE,  SIZE, -SIZE,
-         SIZE,  SIZE, -SIZE,
-         SIZE,  SIZE,  SIZE,
-         SIZE,  SIZE,  SIZE,
-        -SIZE,  SIZE,  SIZE,
-        -SIZE,  SIZE, -SIZE,
+        -m_scale,  m_scale, -m_scale,
+         m_scale,  m_scale, -m_scale,
+         m_scale,  m_scale,  m_scale,
+         m_scale,  m_scale,  m_scale,
+        -m_scale,  m_scale,  m_scale,
+        -m_scale,  m_scale, -m_scale,
 
 
-        -SIZE, -SIZE, -SIZE,
-        -SIZE, -SIZE,  SIZE,
-         SIZE, -SIZE, -SIZE,
-         SIZE, -SIZE, -SIZE,
-        -SIZE, -SIZE,  SIZE,
-         SIZE, -SIZE,  SIZE
+        -m_scale, -m_scale, -m_scale,
+        -m_scale, -m_scale,  m_scale,
+         m_scale, -m_scale, -m_scale,
+         m_scale, -m_scale, -m_scale,
+        -m_scale, -m_scale,  m_scale,
+         m_scale, -m_scale,  m_scale
     };
 
     // float vertices[] = {

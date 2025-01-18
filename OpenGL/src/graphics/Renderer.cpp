@@ -13,7 +13,7 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    light = Light(glm::vec3(-530.0f, 100.f, -120.f), glm::vec4(0.79f, 0.791f, 1.0f, 1.0f));
+    moon = Light(glm::vec3(0, 1200, 4990), glm::vec4(0.79f, 0.791f, 1.0f, 1.0f));
     terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
     waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
 
@@ -59,27 +59,10 @@ void Renderer::initialise()
     skyboxCube.getShader()->setInt("cubeMap", 0);
     skyboxCube.generateBuffers();
 
+    testCube.getShader()->initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
+    testCube.getShader()->setMatrix4("projection", projection);
+    testCube.generateBuffers();
 
-    //std::vector<std::string> skyBoxFaces
-    //{
-    //    "resources/textures/right.png",
-    //    "resources/textures/left.png",
-    //    "resources/textures/top.png",
-    //    "resources/textures/bottom.png",
-    //    "resources/textures/front.png",
-    //    "resources/textures/back.png"
-    //};
-
-
-    //std::vector<std::string> skyBoxFaces
-    //{
-    //    "resources/textures/nLeft.png",
-    //    "resources/textures/nRight.png",
-    //    "resources/textures/nTop.png",
-    //    "resources/textures/nBottom.png",
-    //    "resources/textures/nFront.png",
-    //    "resources/textures/nBack.png"
-    //};
 
     std::vector<std::string> skyBoxFaces
     {
@@ -93,7 +76,7 @@ void Renderer::initialise()
 
     skyBoxTexture = TextureLoader::loadCubeMapTexture(skyBoxFaces);
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
-    normalMap = TextureLoader::loadTexture("resources/textures/highResNormalMap.png");
+    normalMap = TextureLoader::loadTexture("resources/textures/oceanNormalMap.png");
    
 
 
@@ -166,6 +149,13 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     boatShader.setMatrix4("model", model);
     boatModel.render();
 
+    testCube.getShader()->activate();
+    testCube.getShader()->setMatrix4("view", glm::mat3(camera->getView()));
+    testCube.getShader()->setMatrix4("projection", projection);
+    testCube.getShader()->setMatrix4("model", *testCube.getModelMatrix());
+    testCube.bindVertexArray();
+    //testCube.render();
+
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     skyboxCube.getShader()->activate();
     skyboxCube.getShader()->setMatrix4("view", glm::mat3(camera->getView()));
@@ -183,7 +173,7 @@ void Renderer::renderRefractionPass()
     glm::vec4 clippingPlane = glm::vec4(0.f, -1.f, 0.f, 6.f);
     terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("view", camera->getView());
-    terrainShader.setVector3("lightColour", light.getLightColour());
+    terrainShader.setVector3("lightColour", moon.getLightColour());
     terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects(clippingPlane);
 }
@@ -208,8 +198,11 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
 
     waterShader.activate();
     waterShader.setMatrix4("view", camera->getView());
-    waterShader.setVector3("lightPosition", light.getLightPosition());
-    waterShader.setVector3("lightColour", light.getLightColour());
+    waterShader.setVector3("lightPosition", moon.getLightPosition());
+    waterShader.setVector3("lightColour", moon.getLightColour());
+    waterShader.setVector3("lightPos", moon.getLightPosition());
+    waterShader.setVector3("viewPos", camera->getCameraPos());
+
     waterShader.setFloat("time", glfwGetTime()) ;
     waterShader.setVector3("cameraPosition", camera->getCameraPos());
 

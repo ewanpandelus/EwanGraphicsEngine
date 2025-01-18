@@ -21,7 +21,7 @@ int main()
 
     /* Create a windowed mode window and its OpenGL context */
   
-    unsigned int width = 1600, height = 900;
+    unsigned int width = 1920, height = 1080;
 
     window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
     if (!window)
