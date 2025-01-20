@@ -76,7 +76,7 @@ void Renderer::initialise()
 
     skyBoxTexture = TextureLoader::loadCubeMapTexture(skyBoxFaces);
     dudvMap = TextureLoader::loadTexture("resources/textures/DuDvMap.png");
-    normalMap = TextureLoader::loadTexture("resources/textures/oceanNormalMap.png");
+    normalMap = TextureLoader::loadTexture("resources/textures/highResNormalMap.png");
    
 
 

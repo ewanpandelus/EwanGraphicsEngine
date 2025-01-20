@@ -83,12 +83,3 @@ void Game::cleanUp()
     //create shutDown for data types 
 }
 
-
-//if (fmod(floor(totalTime), 2) == 1)
-//{
-//    renderer.renderToScreen(waterFrameBuffers.getRefractionDepthTexture());	// use the color attachment texture as the texture of the quad plane
-//}
-//else
-//{
-//    renderer.renderToScreen(waterFrameBuffers.getRefractionTexture());	// use the color attachment texture as the texture of the quad plane
-//}

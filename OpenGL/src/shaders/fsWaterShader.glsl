@@ -90,7 +90,7 @@ uniform sampler2D normalMap;
 const float waveStrength = 0.15f;
 float waterSpeed = 0.07f;
 
-float normalMapSiftSpeed = 0.00f;
+float normalMapSiftSpeed = 0.07f;
 
 const float normalMapSiftStrength = 0.5f;
 
@@ -139,7 +139,7 @@ void main()
 	vec2 scaledTexCoords = TexCoord * 50;
 	vec2 distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + normalMapSiftSpeed, scaledTexCoords.y)).rg*0.1;
 	distortedTexCoords = scaledTexCoords + (vec2(distortedTexCoords.x, distortedTexCoords.y+normalMapSiftSpeed) * normalMapSiftStrength);
-	vec4 normalMapColour = texture(normalMap, scaledTexCoords);
+	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
 
 	distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + waterSpeed, scaledTexCoords.y)).rg*0.1;
 	distortedTexCoords = scaledTexCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+waterSpeed);
