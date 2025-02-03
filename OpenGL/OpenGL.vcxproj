@@ -24,12 +24,13 @@
     <ProjectGuid>{70562ace-b2ea-481e-b670-63ce5ad0688b}</ProjectGuid>
     <RootNamespace>OpenGL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>EwanEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -147,9 +148,10 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
-    <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\terrain\Terrain.cpp" />
     <ClCompile Include="src\water\Water.cpp" />
     <ClCompile Include="src\water\WaterFrameBuffers.cpp" />
+    <ClCompile Include="src\terrain\TerrainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphics\Primitives.h" />
@@ -170,10 +172,11 @@
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\Terrain.h" />
+    <ClInclude Include="src\terrain\Terrain.h" />
     <ClInclude Include="src\water\Water.h" />
     <ClInclude Include="src\water\WaterFrameBuffers.h" />
     <ClInclude Include="src\water\WaterShader.h" />
+    <ClInclude Include="src\terrain\TerrainManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\fsScreen.glsl" />

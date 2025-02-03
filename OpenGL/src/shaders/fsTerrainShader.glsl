@@ -4,15 +4,13 @@
 out vec4 FragColor;
 in vec3 FragPos;  
 in vec3 Normal;
-in vec3 surfaceNormal;
-in vec3 toLightVector;
 in vec2 TexCoord;
 in vec4 vertexPos;
 
-uniform vec4 tryColor; // we set this variable in the OpenGL code.
-uniform vec4 lightColour;
 
-uniform sampler2D ourTexture;
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+uniform sampler2D normalMap;
 
 // Noise Funcs from https://github.com/stegu/webgl-noise/blob/master/src/noise2D.glsl 
 
@@ -79,11 +77,7 @@ float snoise(vec2 v)
 
 void main()
 {
-	
-	vec4 texColour = texture(ourTexture, TexCoord);
-	vec4 ambient = vec4(0.2, 0.2, 0.2, 1);
 	vec3 norm = normalize(Normal);
-	vec3 unitLightVector = normalize(toLightVector);
 	float slope = 1-norm.y;
 	float noiseFreq = 0.05f;
 
@@ -94,8 +88,8 @@ void main()
 	vec4 snowColour = vec4(0.96,0.96,0.96,1);
 
 
-	vec4 mountainColour= mix(groundColour, rockColour, clamp(slope*3, 0, 1));
-	vec4 topMountainColour= mix(snowColour, rockColour, clamp(slope*3, 0, 1));
+	vec4 mountainColour = mix(groundColour, rockColour, clamp(slope * 5, 0, 1));
+	vec4 topMountainColour= mix(snowColour, rockColour, clamp(slope * 5, 0, 1));
 
 	vec4 terrainColour = vec4(0,0,0,0);
 	
@@ -109,22 +103,55 @@ void main()
 	{
 		terrainColour = mix(sandColour, grassColour, clamp((yPosWithNoise - 5)/25, 0, 1));
 	}
-	if(yPosWithNoise >=30 && yPosWithNoise <100)
+	if(yPosWithNoise >=30 && yPosWithNoise <180)
 	{
-		terrainColour = mix(grassColour, mountainColour, clamp((yPosWithNoise - 30)/70, 0, 1));
+		terrainColour = mix(grassColour, mountainColour, clamp((yPosWithNoise - 30)/150, 0, 1));
 	}
-	if(yPosWithNoise >=100)
+	if(yPosWithNoise >=180 && yPosWithNoise < 230)
 	{
-		terrainColour = mix(mountainColour, topMountainColour, clamp((yPosWithNoise - 100)/20, 0, 1));
+		terrainColour = mountainColour;
+	}
+
+	if(yPosWithNoise >=230)
+	{
+		terrainColour = mix(mountainColour, topMountainColour, clamp((yPosWithNoise - 230)/50, 0, 1));
 	}
 
 
 	//terrainColour = vec4((yPosWithNoise -5)/10, (yPosWithNoise -5)/10, (yPosWithNoise -5)/10, 1);
+	// Normalize the normal
+
+	vec3 normalFromMap = texture(normalMap, TexCoord * 128).rgb;
+	normalFromMap = vec3(normalFromMap.r * 2.0 - 1.0, normalFromMap.b, normalFromMap.g * 2.0 - 1.0);
+	normalFromMap = normalize(normalFromMap);
 
 
-	float nDot1 = dot(norm, vec3(0.5, 1, 1));
-	float brightness = max(nDot1, 0.0);
-	vec4 diffuse = brightness * vec4(0.5,0.5,0.5,1);
-	vec4 result = clamp(ambient+diffuse, 0, 1);
-	FragColor =  terrainColour* result;// *texColour; //vec4(norm, 1);
+    // Blend vertex normal and normal map
+    vec3 finalNormal = normalize(mix(Normal, normalFromMap, 0.1));
+
+
+    // Compute light direction
+    vec3 lightDir = normalize(lightPos - FragPos);
+
+    // Compute view direction
+//    vec3 viewDir = normalize(viewPos - FragPos);
+
+    // Blinn-Phong Lighting Model
+
+    // Diffuse lighting
+    float diff = max(dot(finalNormal, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    // Specular lighting (Blinn-Phong)
+    //vec3 halfwayDir = normalize(lightDir + viewDir); 
+   // float spec = pow(max(dot(norm, halfwayDir), 0.0), 64.0); // Shininess = 64
+ //   vec3 specular = spec * lightColor * 0.5; // Reduce intensity
+//
+    // Ambient lighting (softens the effect)
+    vec3 ambient = lightColor * 0.3;
+
+    // Final color calculation
+    vec4 finalColor = vec4((ambient + diffuse),1) * terrainColour;
+    
+    FragColor = finalColor;
 };

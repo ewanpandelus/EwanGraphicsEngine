@@ -136,7 +136,7 @@ void main()
 	vec4 waterColour = mix(waterColour1, waterColour2, opticalDepth01);
 
 
-	vec2 scaledTexCoords = TexCoord * 50;
+	vec2 scaledTexCoords = TexCoord * 500;
 	vec2 distortedTexCoords = texture(dudvMap, vec2(scaledTexCoords.x + normalMapSiftSpeed, scaledTexCoords.y)).rg*0.1;
 	distortedTexCoords = scaledTexCoords + (vec2(distortedTexCoords.x, distortedTexCoords.y+normalMapSiftSpeed) * normalMapSiftStrength);
 	vec4 normalMapColour = texture(normalMap, distortedTexCoords);
@@ -169,7 +169,7 @@ void main()
 	vec3 reflectedLight = reflect(normalize(fromLightVector), normal);
 	float specular = max(dot(reflectedLight, viewVector), 0.0);
 	specular = pow(specular, shineDamper);
-	vec3 specularHighlights = lightColour * specular * reflectivity * disortionDepthMultiplier;
+	vec3 specularHighlights = lightColour * specular * reflectivity;
 
 
 	vec4 outColour = mix(reflectColour, refractColour, refractiveFactor);

@@ -13,17 +13,28 @@ void Renderer::prepare(glm::mat4 currentView)
 }
 void Renderer::initialise()
 {
-    moon = Light(glm::vec3(0, 1200, 4990), glm::vec4(0.79f, 0.791f, 1.0f, 1.0f));
-    terrainModel = glm::translate(waterModel, glm::vec3(0, -430, 0));
-    waterModel = glm::translate(waterModel, glm::vec3(25, 6, 25));
+    moon = Light(glm::vec3(0, 1200, 4990), glm::vec3(0.79f, 0.791f, 1.0f));
+    sun = Light(glm::vec3(0, 400, 1000000), glm::vec3(0.95f, 0.9f, 0.525f));
+
+
+    terrain = new Terrain(512, 16, glm::vec2(0,0));
+    water = new Water(16, 512);
+    waterModel = glm::translate(waterModel, glm::vec3(0, 6, 0));
 
     shader.initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
     screenShader.initialise("src/shaders/vsScreen.glsl", "src/shaders/fsScreen.glsl");
 
+    terrainNormalMap = TextureLoader::loadTexture("resources/textures/terrainNormalMap2.png");
+
     terrainShader.initialise("src/shaders/vsTerrainShader.glsl", "src/shaders/fsTerrainShader.glsl");
     terrainShader.activate();
     terrainShader.setMatrix4("projection", projection);
-    terrainShader.setMatrix4("model", terrainModel);
+    terrainShader.setMatrix4("model", *terrain->GetModelMatrix());
+    terrainShader.setVector3("lightPos", sun.getLightPosition());
+    terrainShader.setVector3("lightColor", moon.getLightColour());
+    terrainShader.setInt("normalMap", 0);
+
+
 
     waterShader.initialise("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
     waterShader.activate();
@@ -39,14 +50,6 @@ void Renderer::initialise()
     boatShader.initialise("src/shaders/vsBoatShader.glsl", "src/shaders/fsBoatShader.glsl");
     boatShader.activate();
     boatShader.setMatrix4("projection", projection);
-
-
-    terrain = new Terrain(glm::vec3(0, 1, 0), 256, 4);
-    water = new Water(256, 4);
-    //monkeyModel.prepareModel("resources/objects/monkey.obj", "resources/textures/Crate.png");
-    //Model tree;
-    //tree.prepareModel("resources/objects/tree.obj", "resources/textures/Crate.png");
-    //boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/Crate.png");
 
     shader.activate();
     shader.setInt("texture1", 0);
@@ -66,12 +69,12 @@ void Renderer::initialise()
 
     std::vector<std::string> skyBoxFaces
     {
-        "resources/textures/cRight.png",
-        "resources/textures/cLeft.png",
-        "resources/textures/cTop.png",
-        "resources/textures/cBottom.png",
-        "resources/textures/cFront.png",
-        "resources/textures/cBack.png"
+        "resources/textures/sunsetRight.png",
+        "resources/textures/sunsetLeft.png",
+        "resources/textures/sunsetTop.png",
+        "resources/textures/sunsetBottom.png",
+        "resources/textures/sunsetFront.png",
+        "resources/textures/sunsetBack.png"
     };
 
     skyBoxTexture = TextureLoader::loadCubeMapTexture(skyBoxFaces);
@@ -131,30 +134,17 @@ void Renderer::initialise()
 void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
 {
     terrainShader.activate();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, terrainNormalMap);
     terrain->render();
-
-    // floor
-    glBindVertexArray(planeVAO);
-    glBindTexture(GL_TEXTURE_2D, dudvMap);
-    shader.setMatrix4("model", glm::mat4(1.0f));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
-
-    boatShader.activate();
-    boatShader.setMatrix4("view", camera->getView());
-    boatShader.setMatrix4("projection", projection);
-    boatShader.setVector4("clippingPlane", clippingPlane);
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(400.0f, 2.0f, 700.0f));
-    boatShader.setMatrix4("model", model);
-    boatModel.render();
 
     testCube.getShader()->activate();
     testCube.getShader()->setMatrix4("view", glm::mat3(camera->getView()));
     testCube.getShader()->setMatrix4("projection", projection);
     testCube.getShader()->setMatrix4("model", *testCube.getModelMatrix());
     testCube.bindVertexArray();
-    //testCube.render();
+    testCube.render();
+
 
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     skyboxCube.getShader()->activate();
@@ -173,8 +163,6 @@ void Renderer::renderRefractionPass()
     glm::vec4 clippingPlane = glm::vec4(0.f, -1.f, 0.f, 6.f);
     terrainShader.setVector4("clippingPlane", clippingPlane);
     terrainShader.setMatrix4("view", camera->getView());
-    terrainShader.setVector3("lightColour", moon.getLightColour());
-    terrainShader.setMatrix4("model", terrainModel);
     renderOpaqueObjects(clippingPlane);
 }
 
@@ -184,7 +172,6 @@ void Renderer::renderReflectionPass()
     glm::vec4 clippingPlane = glm::vec4(0.f, 1.f, 0.f, -6.f);
     terrainShader.activate();
     terrainShader.setMatrix4("view", camera->getView());
-    terrainShader.setVector3("lightPosition", glm::vec3(1,1,0));
     terrainShader.setVector4("clippingPlane", clippingPlane);
     renderOpaqueObjects(clippingPlane);
 }
@@ -198,9 +185,8 @@ void Renderer::renderWater(unsigned int reflectionTexture, unsigned int refracti
 
     waterShader.activate();
     waterShader.setMatrix4("view", camera->getView());
-    waterShader.setVector3("lightPosition", moon.getLightPosition());
-    waterShader.setVector3("lightColour", moon.getLightColour());
-    waterShader.setVector3("lightPos", moon.getLightPosition());
+    waterShader.setVector3("lightColour", sun.getLightColour());
+    waterShader.setVector3("lightPosition", sun.getLightPosition());
     waterShader.setVector3("viewPos", camera->getCameraPos());
 
     waterShader.setFloat("time", glfwGetTime()) ;

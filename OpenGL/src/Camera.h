@@ -10,7 +10,7 @@ public:
 	Camera() 
 	{
 		m_cameraSensitivity = 0.2f;
-		m_cameraSpeed = 100.f;
+		m_cameraSpeed = 1000.f;
 		m_yaw = -90.0f;
 		m_pitch = 0;
 		m_roll = 0;

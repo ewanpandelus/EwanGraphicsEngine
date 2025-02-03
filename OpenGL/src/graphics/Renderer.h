@@ -6,7 +6,7 @@
 #include <gtc/type_ptr.hpp>
 #include "Light.h"
 #include "Shader.h"
-#include "../Terrain.h"
+#include "../terrain/Terrain.h"
 #include "Model.h"
 #include "TextureLoader.h"
 #include "../water/Water.h"
@@ -36,13 +36,15 @@ public:
 	void setCamera(Camera* camera) { this->camera = camera;}
 
 private:
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 5000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 10000.0f);
 	glm::mat4 m_currentView;
 
 	Camera* camera;
 
 	// Lighting 
 	Light moon;
+	Light sun;
+
 
 	// Shaders 
 
@@ -56,6 +58,7 @@ private:
 	unsigned int skyBoxTexture;
 	unsigned int dudvMap;
 	unsigned int normalMap;
+	unsigned int terrainNormalMap;
 
 	// Environment
 	Water* water{};
@@ -63,7 +66,7 @@ private:
 	
 	// Primitives
 	Cube skyboxCube{};
-	Cube testCube{ glm::vec3(0,1200, 4990), 10};
+	Cube testCube{ glm::vec3(0,400, 30000), 100};
 
 
 	Model monkeyModel;
@@ -71,7 +74,7 @@ private:
 	Model tree;
 
 	// Environment Model Matrices
-	glm::mat4 terrainModel = glm::mat4(1.0f);
+
 	glm::mat4 waterModel = glm::mat4(1.0f);
 	glm::mat4 treeModel = glm::mat4(1.0f);
 

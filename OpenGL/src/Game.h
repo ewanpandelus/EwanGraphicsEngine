@@ -1,5 +1,5 @@
 #pragma once
-#include "Terrain.h"
+#include "terrain/Terrain.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
