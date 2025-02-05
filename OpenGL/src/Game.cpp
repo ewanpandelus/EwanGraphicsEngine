@@ -1,4 +1,7 @@
 #include "Game.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 
 
@@ -10,7 +13,8 @@ void Game::initialise(int width, int height, GLFWwindow* window)
 { 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     renderer.initialise();
-    renderer.setCamera(& camera);
+    renderer.setCamera(&camera);
+  
     waterFrameBuffers.initialise();
 }
 
@@ -36,6 +40,7 @@ void Game::tick(GLFWwindow* window)
 
 void Game::render()
 {
+ 
     glm::vec3 cameraPos = camera.getCameraPos();
     float distance = 2 * (cameraPos.y - renderer.getWater()->getPosition().y);
     cameraPos.y -= distance;
@@ -76,6 +81,17 @@ void Game::render()
     glEnable(GL_DEPTH_TEST);
     renderer.renderOpaqueObjects(glm::vec4(0,0,0,0));
     renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+    ImGui::Begin("blah");
+    ImGui::Text("KJDKS");
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Game::cleanUp()

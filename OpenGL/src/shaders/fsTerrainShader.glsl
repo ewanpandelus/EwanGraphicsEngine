@@ -79,7 +79,7 @@ void main()
 {
 	vec3 norm = normalize(Normal);
 	float slope = 1-norm.y;
-	float noiseFreq = 0.05f;
+	float noiseFreq = 0.01f;
 
 	vec4 sandColour = vec4(0.96,0.95,0.73,1);
 	vec4 grassColour = vec4(0.3,0.6,0.4,1);
@@ -93,19 +93,19 @@ void main()
 
 	vec4 terrainColour = vec4(0,0,0,0);
 	
-	float yPosWithNoise = vertexPos.y + snoise(vec2(vertexPos.x *noiseFreq, vertexPos.z *noiseFreq));
+	float yPosWithNoise = vertexPos.y + snoise(vec2(vertexPos.x *noiseFreq, vertexPos.z *noiseFreq)) * 5;
 
-	if(yPosWithNoise < 5)
+	if(yPosWithNoise < 0)
 	{
 		terrainColour = sandColour;
 	}
-	if(yPosWithNoise>=5 && yPosWithNoise<30)
+	if(yPosWithNoise>=0 && yPosWithNoise<50)
 	{
-		terrainColour = mix(sandColour, grassColour, clamp((yPosWithNoise - 5)/25, 0, 1));
+		terrainColour = mix(sandColour, grassColour, clamp((yPosWithNoise)/50, 0, 1));
 	}
-	if(yPosWithNoise >=30 && yPosWithNoise <180)
+	if(yPosWithNoise >=50 && yPosWithNoise <180)
 	{
-		terrainColour = mix(grassColour, mountainColour, clamp((yPosWithNoise - 30)/150, 0, 1));
+		terrainColour = mix(grassColour, mountainColour, clamp((yPosWithNoise - 50)/130, 0, 1));
 	}
 	if(yPosWithNoise >=180 && yPosWithNoise < 230)
 	{

@@ -24,7 +24,7 @@ void Renderer::initialise()
     shader.initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
     screenShader.initialise("src/shaders/vsScreen.glsl", "src/shaders/fsScreen.glsl");
 
-    terrainNormalMap = TextureLoader::loadTexture("resources/textures/terrainNormalMap2.png");
+    terrainNormalMap = TextureLoader::loadTexture("resources/textures/terrainNormalMap.png");
 
     terrainShader.initialise("src/shaders/vsTerrainShader.glsl", "src/shaders/fsTerrainShader.glsl");
     terrainShader.activate();

@@ -48,7 +48,7 @@ private:
     std::vector<float> vertices;
     std::vector<long> indices;
 
-    float m_frequency = 0.25f, m_amplitude = 22.f;
+    float m_frequency = 0.25f, m_amplitude = 18.f;
     float m_persistence = 2.4f, m_lacunarity = 0.45f;
 
     glm::vec2 m_offset;

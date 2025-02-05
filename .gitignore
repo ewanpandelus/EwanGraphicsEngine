@@ -51,3 +51,7 @@ OpenGL/OpenGL.vcxproj.filters
 *.vcxproj
 OpenGL/OpenGL.vcxproj
 .vs/OpenGL/v16/Browse.VC.db
+/Dependencies/glm/out/build/x64-Debug/CMakeFiles
+/Dependencies/glm/out/build/x64-Debug
+/EwanEngineEditor/obj/Debug
+/EwanEngineEditor/obj
