@@ -20,9 +20,6 @@ public:
 
     void initialise(const char* vertexPath, const char* fragmentPath);
    
-    // activate the shader
-    // 
-    void initialise(const char* vertexPath, const char* fragmentPath);
     // ------------------------------------------------------------------------
     void activate();
 

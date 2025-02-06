@@ -55,3 +55,6 @@ OpenGL/OpenGL.vcxproj
 /Dependencies/glm/out/build/x64-Debug
 /EwanEngineEditor/obj/Debug
 /EwanEngineEditor/obj
+EwanEngineEditor/.vs/EwanEngineEditor.csproj.dtbcache.json
+EwanEngineEditor/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+EwanEngineEditor/obj/Debug/EwanEngineEditor.csproj.AssemblyReference.cache

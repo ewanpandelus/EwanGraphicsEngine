@@ -196,5 +196,6 @@
     <None Include="src\shaders\vsBoatShader.glsl" />
     <None Include="src\shaders\fsSkybox.glsl" />
     <None Include="src\shaders\vsSkybox.glsl" />
+    <None Include="imgui.ini" />
   </ItemGroup>
 </Project>

@@ -87,8 +87,8 @@ void Game::render()
     ImGui::NewFrame();
 
 
-    ImGui::Begin("blah");
-    ImGui::Text("KJDKS");
+    ImGui::Begin("Placeholder UI");
+    ImGui::Text("Ewan's Graphics Engine!");
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

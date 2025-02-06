@@ -6,7 +6,7 @@
 #include "glm.hpp"
 #include <vector>
 #include <string>
-#include "../Shader.h"
+
 
 
 
@@ -27,7 +27,6 @@ public:
         float u, v;
     };
 
-    Shader getShader() { return waterShader;}
 
 private:
 
