@@ -2,16 +2,8 @@
 #include <GL/glew.h>
 class WaterFrameBuffers
 {
-
-protected:
-
-	const static int REFLECTION_WIDTH = 320;
-    const static int REFLECTION_HEIGHT = 180;
-	const static int REFRACTION_WIDTH = 1280;
-	const static int REFRACTION_HEIGHT = 720;
-
 public:
-	WaterFrameBuffers();
+	void initialise();
 	
 	void cleanUp();
 
@@ -52,9 +44,15 @@ private:
 
 
 	 GLuint frameBuffer;
-	 GLuint texture;
 	 GLuint depthTexture;
 	 GLuint depthBuffer;
 
+
+
+	 GLuint textureColorbuffer;
+	 GLuint renderBufferObject;
+
+	 const unsigned int SCR_WIDTH = 1600;
+	 const unsigned int SCR_HEIGHT = 900;
 };
 

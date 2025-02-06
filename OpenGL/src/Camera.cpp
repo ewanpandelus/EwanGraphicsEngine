@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 
-void Camera::UpdateCameraOrientation(float xPosIn, float yPosIn)
+const void Camera::updateCameraOrientation(float xPosIn, float yPosIn)
 {
     float xpos = static_cast<float>(xPosIn);
     float ypos = static_cast<float>(yPosIn);
@@ -18,37 +18,46 @@ void Camera::UpdateCameraOrientation(float xPosIn, float yPosIn)
     lastX = xpos;
     lastY = ypos;
 
-    xoffset *= cameraSensitivity;
-    yoffset *= cameraSensitivity;
+    xoffset *= m_cameraSensitivity;
+    yoffset *= m_cameraSensitivity;
 
-    yaw += xoffset;
-    pitch += yoffset;
+    m_yaw += xoffset;
+    m_pitch += yoffset;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
+    if (m_pitch > 89.0f)
+        m_pitch = 89.0f;
+    if (m_pitch < -89.0f)
+        m_pitch = -89.0f;
 
     glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
     m_cameraFront = glm::normalize(front);
 }
 
-void Camera::UpdateCameraPosition(InputManager* inputManager, float deltaTime)
+const void Camera::updateCameraPosition(InputManager* inputManager, float deltaTime)
 {
 
     if (inputManager->forward.commandActive)
-        m_cameraPos = ((m_cameraPos) += (cameraSpeed * deltaTime * m_cameraFront));
+        m_cameraPos = ((m_cameraPos) += (m_cameraSpeed * deltaTime * m_cameraFront));
 
     if (inputManager->backward.commandActive)
-        m_cameraPos = ((m_cameraPos) -= (cameraSpeed * deltaTime * m_cameraFront));
+        m_cameraPos = ((m_cameraPos) -= (m_cameraSpeed * deltaTime * m_cameraFront));
 
     if (inputManager->left.commandActive)
-        m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed * deltaTime;
+        m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_cameraSpeed * deltaTime;
 
     if (inputManager->right.commandActive)
-        m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed * deltaTime;
+        m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * m_cameraSpeed * deltaTime;
+}
+
+const void Camera::updateCameraView()
+{
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    m_cameraFront = glm::normalize(front);
 }

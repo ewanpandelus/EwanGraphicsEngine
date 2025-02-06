@@ -1,12 +1,9 @@
 #include "Water.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../Terrain.h"
-#include "../maths/PerlinNoise.h"
 #include <iostream>
 
 Water::Water(int resolution, float scale)
 {
-	waterShader.initialise("src/shaders/vsWaterShader.glsl", "src/shaders/fsWaterShader.glsl");
 	m_scale = scale;
 	m_resolution = resolution;
 	initialiseHeightMap();
@@ -25,27 +22,34 @@ Water::~Water()
 
 void Water::initialiseHeightMap()
 {
-	m_vertexPositionMap = new VertexPositionMapType[m_resolution * m_resolution];
-	int index;
-	if (!m_vertexPositionMap)
+	m_positionMap = new PositionMapType[m_resolution * m_resolution];
+
+	if (!m_positionMap)
 	{
 		return;
 	}
 	float textureCoordinatesStep = m_resolution * 2;
+	int index;
 	for (int j = 0; j < m_resolution; j++)
 	{
 		for (int i = 0; i < m_resolution; i++)
 		{
 			index = (m_resolution * j) + i;
-			m_vertexPositionMap[index].x = i * m_scale;
-			m_vertexPositionMap[index].y = 0;
-			m_vertexPositionMap[index].z = j * m_scale;
+	
+
+
+
+			m_positionMap[index].x = i * m_scale;
+			m_positionMap[index].y = 0;
+			m_positionMap[index].z = j * m_scale;
+
 			//and use this step to calculate the texture coordinates for this point on the terrain.
-			m_vertexPositionMap[index].u = (float)i * textureCoordinatesStep;
-			m_vertexPositionMap[index].v = (float)j * textureCoordinatesStep;
-			m_vertexPositionMap[index].nx = 0;
-			m_vertexPositionMap[index].ny = 1;
-			m_vertexPositionMap[index].nz = 0;
+			m_positionMap[index].u = (float)i / textureCoordinatesStep;
+			m_positionMap[index].v = (float)j / textureCoordinatesStep;
+
+			m_positionMap[index].nx = 0;
+			m_positionMap[index].ny = 1;
+			m_positionMap[index].nz = 0;
 		}
 	}
 }
@@ -115,7 +119,6 @@ void Water::generateBuffers()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-	;;// glGenFramebuffers();
 }
 
 void Water::bindBuffers() {
@@ -136,10 +139,9 @@ void Water::bindBuffers() {
 	glBindVertexArray(0);
 }
 
-void Water::render() {
+void Water::render()
+{
 	bindBuffers();
-	// glUseProgram(shaderProgram);
-	// glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
@@ -159,18 +161,18 @@ void Water::SetupVertex(int* currentIndex, int triangle1Index)
 	int index = *currentIndex;
 
 	//position
-	vertices.push_back(m_vertexPositionMap[triangle1Index].x);
-	vertices.push_back(m_vertexPositionMap[triangle1Index].y);
-	vertices.push_back(m_vertexPositionMap[triangle1Index].z);
+	vertices.push_back(m_positionMap[triangle1Index].x);
+	vertices.push_back(m_positionMap[triangle1Index].y);
+	vertices.push_back(m_positionMap[triangle1Index].z);
 
 	//normal
-	vertices.push_back(m_vertexPositionMap[triangle1Index].nx);
-	vertices.push_back(m_vertexPositionMap[triangle1Index].ny);
-	vertices.push_back(m_vertexPositionMap[triangle1Index].nz);
+	vertices.push_back(m_positionMap[triangle1Index].nx);
+	vertices.push_back(m_positionMap[triangle1Index].ny);
+	vertices.push_back(m_positionMap[triangle1Index].nz);
 
 	//tex coords 
-	vertices.push_back(m_vertexPositionMap[triangle1Index].u);
-	vertices.push_back(m_vertexPositionMap[triangle1Index].v);
+	vertices.push_back(m_positionMap[triangle1Index].u);
+	vertices.push_back(m_positionMap[triangle1Index].v);
 
 	indices[index] = index;
 	*currentIndex += 1;
