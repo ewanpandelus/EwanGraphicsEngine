@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EwanEngine", "OpenGL\OpenGL.vcxproj", "{70562ACE-B2EA-481E-B670-63CE5AD0688B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntelopeEditor", "..\AntelopeEngine\Antelope\AntelopeEditor\AntelopeEditor.csproj", "{C5348DD4-B731-4D1D-BA81-AF9249F92A82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntelopeEditor", "AntelopeEditor\AntelopeEditor.csproj", "{C5348DD4-B731-4D1D-BA81-AF9249F92A82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
