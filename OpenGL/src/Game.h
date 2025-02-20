@@ -6,7 +6,10 @@
 #include "Camera.h"
 #include "water/WaterFrameBuffers.h"
 #include "graphics/Renderer.h"
-
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+#include "Windows.h"
 
 class Game
 {
@@ -14,9 +17,10 @@ public:
     Game();
     void initialise(int width, int height, GLFWwindow* window);
     
-    void tick(GLFWwindow* window);
+    HWND tick(GLFWwindow* window);
 
     Camera* getCamera()  {return &camera;}
+
 
 private:
     void render();

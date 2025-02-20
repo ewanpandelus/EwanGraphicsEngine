@@ -3,12 +3,6 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-#include "Windows.h"
-
-
 
 Game::Game()
 {
@@ -23,8 +17,9 @@ void Game::initialise(int width, int height, GLFWwindow* window)
     waterFrameBuffers.initialise();
 }
 
-void Game::tick(GLFWwindow* window)
+HWND Game::tick(GLFWwindow* window)
 {
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -41,9 +36,10 @@ void Game::tick(GLFWwindow* window)
 
     glfwPollEvents();
     cleanUp();
-    HWND hwnd = glfwGetWin32Window(window);
-
+    return glfwGetWin32Window(window);
 }
+
+
 
 void Game::render()
 {
