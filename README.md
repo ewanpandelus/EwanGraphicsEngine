@@ -8,3 +8,4 @@ Current features:
 - Terrain rendering (height & slope-based colouring)
 - Cube mapping (sky-box)
 
+![Application](OpenGL/resources/Screenshot.png "Water Rendering")
