@@ -12,6 +12,7 @@
 #include "../water/Water.h"
 #include "../Camera.h"
 #include "Primitives.h"
+#include "GrassRenderer.h"
 
 class Renderer
 {
@@ -39,6 +40,11 @@ private:
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 10000.0f);
 	glm::mat4 m_currentView;
 
+	// Rendering Systems
+	GrassRenderer grassRenderer{};
+
+
+	//
 	Camera* camera;
 
 	// Lighting 
@@ -47,12 +53,12 @@ private:
 
 
 	// Shaders 
-
 	Shader terrainShader;
 	Shader boatShader;
 	Shader screenShader;
 	Shader shader;
 	Shader waterShader;
+	Shader grassShader;
 
 	// Textures
 	unsigned int skyBoxTexture;
@@ -68,16 +74,14 @@ private:
 	Cube skyboxCube{};
 	Cube testCube{ glm::vec3(0,400, 30000), 100};
 
-
-	Model monkeyModel;
 	Model boatModel;
+	Model grassModel;
+	Model monkeyModel;
 	Model tree;
 
 	// Environment Model Matrices
-
 	glm::mat4 waterModel = glm::mat4(1.0f);
 	glm::mat4 treeModel = glm::mat4(1.0f);
-
 
 	unsigned int planeVAO, planeVBO;
 	// screen quad VAO

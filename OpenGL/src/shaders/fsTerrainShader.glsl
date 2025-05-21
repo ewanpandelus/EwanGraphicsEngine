@@ -151,7 +151,7 @@ void main()
     vec3 ambient = lightColor * 0.3;
 
     // Final color calculation
-    vec4 finalColor = vec4((ambient + diffuse),1) * terrainColour;
+    vec4 finalColor = vec4((ambient + diffuse),1) * grassColour;
     
     FragColor = finalColor;
 };

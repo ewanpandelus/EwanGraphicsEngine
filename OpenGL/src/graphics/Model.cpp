@@ -26,6 +26,7 @@ void  Model::loadOBJ(const std::string& filepath)
         std::istringstream iss(line);
         std::string prefix;
         iss >> prefix;
+
         if (prefix == "v") {
             GLfloat x, y, z;
             iss >> x >> y >> z;
@@ -47,30 +48,82 @@ void  Model::loadOBJ(const std::string& filepath)
             texcoords.push_back(v);
         }
         else if (prefix == "f") {
-            GLuint vIndex[3], nIndex[3], tIndex[3];
-            char slash;
+            std::vector<GLuint> vIndices, tIndices, nIndices;
+            std::string vertexStr;
 
-            for (int i = 0; i < 3; ++i) {
-                iss >> vIndex[i] >> slash >> tIndex[i] >> slash >> nIndex[i];
-                vertexIndices.push_back(vIndex[i] - 1);
-                texcoordIndices.push_back(tIndex[i] - 1);
-                normalIndices.push_back(nIndex[i] - 1);
+            while (iss >> vertexStr) {
+                std::istringstream viss(vertexStr);
+                std::string v, t, n;
+
+                GLuint vi = 0, ti = 0, ni = 0;
+                size_t firstSlash = vertexStr.find('/');
+                size_t secondSlash = vertexStr.find('/', firstSlash + 1);
+
+                if (firstSlash == std::string::npos) {
+                    vi = std::stoi(vertexStr);
+                }
+                else if (secondSlash == std::string::npos) {
+                    // v/vt
+                    v = vertexStr.substr(0, firstSlash);
+                    t = vertexStr.substr(firstSlash + 1);
+                    vi = std::stoi(v);
+                    ti = std::stoi(t);
+                }
+                else {
+                    // v/vt/vn or v//vn
+                    v = vertexStr.substr(0, firstSlash);
+                    if (secondSlash > firstSlash + 1)
+                        t = vertexStr.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+                    n = vertexStr.substr(secondSlash + 1);
+
+                    vi = std::stoi(v);
+                    if (!t.empty()) ti = std::stoi(t);
+                    if (!n.empty()) ni = std::stoi(n);
+                }
+
+                vIndices.push_back(vi - 1);
+                if (ti > 0) tIndices.push_back(ti - 1);
+                if (ni > 0) nIndices.push_back(ni - 1);
+            }
+
+            // Handle triangle (3 vertices)
+            if (vIndices.size() == 3) {
+                for (int i = 0; i < 3; ++i) {
+                    vertexIndices.push_back(vIndices[i]);
+                    if (!tIndices.empty()) texcoordIndices.push_back(tIndices[i]);
+                    if (!nIndices.empty()) normalIndices.push_back(nIndices[i]);
+                }
+            }
+            // Handle quad (4 vertices), split into 2 triangles: 0-1-2 and 0-2-3
+            else if (vIndices.size() == 4) {
+                int quadOrder[6] = { 0, 1, 2, 0, 2, 3 };
+                for (int i = 0; i < 6; ++i) {
+                    int idx = quadOrder[i];
+                    vertexIndices.push_back(vIndices[idx]);
+                    if (!tIndices.empty()) texcoordIndices.push_back(tIndices[idx]);
+                    if (!nIndices.empty()) normalIndices.push_back(nIndices[idx]);
+                }
             }
         }
     }
 
     for (size_t i = 0; i < vertexIndices.size(); ++i) {
-        Vertex vertex;
+        Vertex vertex{};
+
         vertex.position[0] = positions[3 * vertexIndices[i]];
         vertex.position[1] = positions[3 * vertexIndices[i] + 1];
         vertex.position[2] = positions[3 * vertexIndices[i] + 2];
 
-        vertex.normal[0] = normals[3 * normalIndices[i]];
-        vertex.normal[1] = normals[3 * normalIndices[i] + 1];
-        vertex.normal[2] = normals[3 * normalIndices[i] + 2];
+        if (!normalIndices.empty()) {
+            vertex.normal[0] = normals[3 * normalIndices[i]];
+            vertex.normal[1] = normals[3 * normalIndices[i] + 1];
+            vertex.normal[2] = normals[3 * normalIndices[i] + 2];
+        }
 
-        vertex.texcoord[0] = texcoords[2 * texcoordIndices[i]];
-        vertex.texcoord[1] = texcoords[2 * texcoordIndices[i] + 1];
+        if (!texcoordIndices.empty()) {
+            vertex.texcoord[0] = texcoords[2 * texcoordIndices[i]];
+            vertex.texcoord[1] = texcoords[2 * texcoordIndices[i] + 1];
+        }
 
         mesh.vertices.push_back(vertex);
         mesh.indices.push_back(mesh.indices.size());

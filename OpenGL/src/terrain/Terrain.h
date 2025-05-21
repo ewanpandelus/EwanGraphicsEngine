@@ -42,7 +42,7 @@ private:
     int m_resolution;
     float m_scale;
 
-    glm::mat4 terrainModel = glm::mat4(1.0f);
+    glm::mat4 terrainModel = glm::mat4(1.f);
 
     std::vector<std::vector<float>> heightmap;
     std::vector<float> vertices;

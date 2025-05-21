@@ -143,6 +143,7 @@
     <ClCompile Include="..\Dependencies\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\graphics\GrassRenderer.cpp" />
     <ClCompile Include="src\graphics\Primitives.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\graphics\Model.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\Dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="..\Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\graphics\GrassRenderer.h" />
     <ClInclude Include="src\graphics\Primitives.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\graphics\Light.h" />
@@ -194,12 +196,14 @@
     <ClInclude Include="src\terrain\TerrainManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\fsGrassShader.glsl" />
     <None Include="src\shaders\fsScreen.glsl" />
     <None Include="src\shaders\fsSkybox.glsl" />
     <None Include="src\shaders\fsTerrainShader.glsl" />
     <None Include="src\shaders\fsStandard.glsl" />
     <None Include="src\shaders\fsBoatShader.glsl" />
     <None Include="src\shaders\fsWaterShader.glsl" />
+    <None Include="src\shaders\vsGrassShader.glsl" />
     <None Include="src\shaders\vsScreen.glsl" />
     <None Include="src\shaders\vsSkybox.glsl" />
     <None Include="src\shaders\vsTerrainShader.glsl" />

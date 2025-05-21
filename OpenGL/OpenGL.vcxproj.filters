@@ -87,6 +87,9 @@
     <ClCompile Include="..\Dependencies\imgui\imgui.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\GrassRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -182,6 +185,9 @@
     <ClInclude Include="..\Dependencies\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\GrassRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\vsTerrainShader.glsl" />
@@ -196,5 +202,7 @@
     <None Include="src\shaders\vsBoatShader.glsl" />
     <None Include="src\shaders\fsSkybox.glsl" />
     <None Include="src\shaders\vsSkybox.glsl" />
+    <None Include="src\shaders\vsGrassShader.glsl" />
+    <None Include="src\shaders\fsGrassShader.glsl" />
   </ItemGroup>
 </Project>

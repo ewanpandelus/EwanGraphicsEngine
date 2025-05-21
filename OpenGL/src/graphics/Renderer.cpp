@@ -17,7 +17,7 @@ void Renderer::initialise()
     sun = Light(glm::vec3(0, 400, 1000000), glm::vec3(0.95f, 0.9f, 0.525f));
 
 
-    terrain = new Terrain(512, 16, glm::vec2(0,0));
+    terrain = new Terrain(128, 10, glm::vec2(0,0));
     water = new Water(16, 512);
     waterModel = glm::translate(waterModel, glm::vec3(0, 6, 0));
 
@@ -29,7 +29,7 @@ void Renderer::initialise()
     terrainShader.initialise("src/shaders/vsTerrainShader.glsl", "src/shaders/fsTerrainShader.glsl");
     terrainShader.activate();
     terrainShader.setMatrix4("projection", projection);
-    terrainShader.setMatrix4("model", *terrain->GetModelMatrix());
+    terrainShader.setMatrix4("model", glm::mat4(1.0f));
     terrainShader.setVector3("lightPos", sun.getLightPosition());
     terrainShader.setVector3("lightColor", moon.getLightColour());
     terrainShader.setInt("normalMap", 0);
@@ -46,7 +46,12 @@ void Renderer::initialise()
     waterShader.setInt("depthTexture", 3);
     waterShader.setInt("normalMap", 4);
 
+    grassModel.prepareModel("resources/objects/grass.obj", "resources/textures/DuDvMap.png");
+    grassShader.initialise("src/shaders/vsGrassShader.glsl", "src/shaders/fsGrassShader.glsl");
+    grassShader.activate();
+    grassShader.setMatrix4("projection", projection);
 
+    boatModel.prepareModel("resources/objects/boat.obj", "resources/textures/DuDvMap.png");
     boatShader.initialise("src/shaders/vsBoatShader.glsl", "src/shaders/fsBoatShader.glsl");
     boatShader.activate();
     boatShader.setMatrix4("projection", projection);
@@ -65,7 +70,8 @@ void Renderer::initialise()
     testCube.getShader()->initialise("src/shaders/vsStandard.glsl", "src/shaders/fsStandard.glsl");
     testCube.getShader()->setMatrix4("projection", projection);
     testCube.generateBuffers();
-
+   
+    grassRenderer.initialise(glm::vec3(0.f), glm::vec2(1280, 1280), projection);
 
     std::vector<std::string> skyBoxFaces
     {
@@ -138,13 +144,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     glBindTexture(GL_TEXTURE_2D, terrainNormalMap);
     terrain->render();
 
-    testCube.getShader()->activate();
-    testCube.getShader()->setMatrix4("view", glm::mat3(camera->getView()));
-    testCube.getShader()->setMatrix4("projection", projection);
-    testCube.getShader()->setMatrix4("model", *testCube.getModelMatrix());
-    testCube.bindVertexArray();
-    testCube.render();
-
+    grassRenderer.render(m_currentView, projection, clippingPlane);
 
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     skyboxCube.getShader()->activate();
@@ -155,6 +155,7 @@ void Renderer::renderOpaqueObjects(glm::vec4 clippingPlane)
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxTexture);
     skyboxCube.render();
     glDepthFunc(GL_LESS); // set depth function back to default
+
 }
 
 void Renderer::renderRefractionPass()

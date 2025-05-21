@@ -45,53 +45,53 @@ void Game::render()
 {
  
     glm::vec3 cameraPos = camera.getCameraPos();
-    float distance = 2 * (cameraPos.y - renderer.getWater()->getPosition().y);
-    cameraPos.y -= distance;
-    camera.setCameraPos(cameraPos);
-    camera.invertPitch();
+    //float distance = 2 * (cameraPos.y - renderer.getWater()->getPosition().y);
+    //cameraPos.y -= distance;
+    //camera.setCameraPos(cameraPos);
+    //camera.invertPitch();
 
-    // Bind to framebuffer and draw scene 
-    waterFrameBuffers.bindReflectionFrameBuffer();
-    glEnable(GL_DEPTH_TEST);
+    //// Bind to framebuffer and draw scene 
+    //waterFrameBuffers.bindReflectionFrameBuffer();
+    //glEnable(GL_DEPTH_TEST);
 
-    // Clear the framebuffer's content
-    renderer.prepare(camera.getView());
+    //// Clear the framebuffer's content
+    //renderer.prepare(camera.getView());
 
-    //// FIRST RENDER - REFLECTION
-    renderer.renderReflectionPass();
+    ////// FIRST RENDER - REFLECTION
+    //renderer.renderReflectionPass();
 
-    // Unbind framebuffer and draw scene 
-    waterFrameBuffers.unbindCurrentFrameBuffer();
-    waterFrameBuffers.bindRefractionFrameBuffer();
-    glEnable(GL_DEPTH_TEST);
+    //// Unbind framebuffer and draw scene 
+    //waterFrameBuffers.unbindCurrentFrameBuffer();
+    //waterFrameBuffers.bindRefractionFrameBuffer();
+    //glEnable(GL_DEPTH_TEST);
 
 
-     //// SECOND RENDER REFRACTION
-    cameraPos.y += distance;
-    camera.setCameraPos(cameraPos);
-    camera.invertPitch();
+    // //// SECOND RENDER REFRACTION
+    //cameraPos.y += distance;
+    //camera.setCameraPos(cameraPos);
+    //camera.invertPitch();
 
 
     renderer.prepare(camera.getView());
     renderer.renderRefractionPass();
 
 
-    waterFrameBuffers.unbindCurrentFrameBuffer();
-    renderer.prepare(camera.getView());
+    //waterFrameBuffers.unbindCurrentFrameBuffer();
+    //renderer.prepare(camera.getView());
 
-    glDisable(GL_CLIP_DISTANCE0);
+    //glDisable(GL_CLIP_DISTANCE0);
     /// Last render - what we see 
     glEnable(GL_DEPTH_TEST);
     renderer.renderOpaqueObjects(glm::vec4(0,0,0,0));
-    renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
+    //renderer.renderWater(waterFrameBuffers.getReflectionTexture(), waterFrameBuffers.getRefractionTexture(), waterFrameBuffers.getRefractionDepthTexture());
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
 
-    ImGui::Begin("blah");
-    ImGui::Text("KJDKS");
+    ImGui::Begin("Grass Rendering");
+    ImGui::Text("Hello World!");
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
