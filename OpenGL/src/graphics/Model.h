@@ -19,6 +19,7 @@ struct Mesh {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
     GLuint vao, vbo, ebo;
+    GLsizei indexCount = 0;
 };
 
 class Model {
@@ -29,6 +30,10 @@ public:
     void loadOBJ(const std::string& filepath);
 
     void loadTexture(const char* filepath);
+
+    GLuint getVAO() const;
+
+    GLsizei getIndexCount() const;
 
     void bindTexture();
 

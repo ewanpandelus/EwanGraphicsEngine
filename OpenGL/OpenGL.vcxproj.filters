@@ -204,5 +204,6 @@
     <None Include="src\shaders\vsSkybox.glsl" />
     <None Include="src\shaders\vsGrassShader.glsl" />
     <None Include="src\shaders\fsGrassShader.glsl" />
+    <None Include="src\shaders\computeGrassShader.comp" />
   </ItemGroup>
 </Project>

@@ -1,33 +1,35 @@
-#version 330 core
+#version 430 core
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
-
+layout (std430, binding = 0) buffer GrassBuffer {
+    vec4 grassPositions[]; // per-instance grass blade world positions
+};
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform mat4 transform;
 uniform vec3 lightPosition;
-uniform vec4 clippingPlane;
 
-out vec3 ourColor;
-out vec3 surfaceNormal;
+out vec3 FragPos;
 out vec3 Normal;
+out vec3 surfaceNormal;
 out vec3 toLightVector;
 out vec2 TexCoord;
 
-out vec3 FragPos;  
 void main()
 {
-   vec4 worldPosition = model * vec4(aPos, 1.0);
-   gl_ClipDistance[0] = dot(worldPosition, clippingPlane);
-   gl_Position = projection * view * model * vec4(aPos, 1.0);
-   FragPos = vec3(model * vec4(aPos, 1.0));
-   ourColor = vec3(1,1,1); // set ourColor to the input color we got from the vertex data
-   surfaceNormal = (model*vec4(aNormal, 0.0)).xyz;
-   toLightVector = lightPosition - worldPosition.xyz;
-   Normal = aNormal;
-   TexCoord = aTexCoord;
-};
+    vec3 instancePosition = grassPositions[gl_InstanceID].xyz;
+
+    vec4 worldPosition = model * vec4(instancePosition + aPos, 1.0);
+    gl_Position = projection * view * worldPosition;
+    gl_ClipDistance[0] = dot(worldPosition, clippingPlane);
+
+    FragPos = vec3(worldPosition);
+    surfaceNormal = normalize((model * vec4(aNormal, 0.0)).xyz);
+    Normal = aNormal;
+    toLightVector = lightPosition - FragPos;
+    TexCoord = aTexCoord;
+}

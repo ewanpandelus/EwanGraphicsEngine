@@ -19,6 +19,8 @@ public:
     Shader();
 
     void initialise(const char* vertexPath, const char* fragmentPath);
+
+    void initialiseCompute(const char* computePath);
    
     // activate the shader
     // ------------------------------------------------------------------------
@@ -27,12 +29,16 @@ public:
     void setModelViewProjection(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
     // utility uniform functions
     // ------------------------------------------------------------------------
-    void setBool(const std::string& name, bool value); const
+    void setBool(const std::string& name, bool value) const; const
 
      // ------------------------------------------------------------------------
     void setInt(const std::string& name, int value) const;
     // ------------------------------------------------------------------------
     void setFloat(const std::string& name, float value) const;
+
+    void setUInt(const std::string& name, unsigned int value) const;
+
+    void setVector2(const std::string& name, glm::vec2 value) const;
 
     void setVector3(const std::string& name, glm::vec3 value) const;
 

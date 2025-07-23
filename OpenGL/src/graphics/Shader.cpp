@@ -62,6 +62,48 @@
      glDeleteShader(fragment);
  }
 
+ void Shader::initialiseCompute(const char* computePath)
+ {
+     std::string computeCode;
+     std::ifstream cShaderFile;
+
+     // ensure ifstream can throw exceptions
+     cShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+     try
+     {
+         cShaderFile.open(computePath);
+         std::stringstream cShaderStream;
+         cShaderStream << cShaderFile.rdbuf();
+         cShaderFile.close();
+         computeCode = cShaderStream.str();
+     }
+     catch (std::ifstream::failure& e)
+     {
+         std::cout << "ERROR::COMPUTE_SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+         return;
+     }
+
+     const char* cShaderCode = computeCode.c_str();
+
+     // Compile compute shader
+     unsigned int compute = glCreateShader(GL_COMPUTE_SHADER);
+     glShaderSource(compute, 1, &cShaderCode, NULL);
+     glCompileShader(compute);
+     checkCompileErrors(compute, "COMPUTE");
+
+     // Link shader program
+     ID = glCreateProgram();
+     glAttachShader(ID, compute);
+     glLinkProgram(ID);
+     checkCompileErrors(ID, "PROGRAM");
+
+     // Retrieve uniforms
+     getAllUniformLocations();
+
+     // Delete the compute shader as it's linked
+     glDeleteShader(compute);
+ }
+
  void Shader::activate()
  {
      glUseProgram(ID);
@@ -74,9 +116,8 @@
      setMatrix4("projection", projection);
  }
 
- void Shader::setBool(const std::string& name, bool value)
+void Shader::setBool(const std::string& name, bool value) const
 {
-
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 
@@ -88,6 +129,16 @@ const void Shader::setInt(const std::string& name, int value) const
 void Shader::setFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void Shader::setUInt(const std::string& name, unsigned int value) const
+{
+    glUniform1ui(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void Shader::setVector2(const std::string& name, glm::vec2 value) const
+{
+    glUniform2f(glGetUniformLocation(ID, name.c_str()), value.x, value.y);
 }
 
 void Shader::setVector3(const std::string& name, glm::vec3 value) const

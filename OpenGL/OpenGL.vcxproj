@@ -196,6 +196,7 @@
     <ClInclude Include="src\terrain\TerrainManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\computeGrassShader.comp" />
     <None Include="src\shaders\fsGrassShader.glsl" />
     <None Include="src\shaders\fsScreen.glsl" />
     <None Include="src\shaders\fsSkybox.glsl" />

@@ -17,7 +17,7 @@ void Renderer::initialise()
     sun = Light(glm::vec3(0, 400, 1000000), glm::vec3(0.95f, 0.9f, 0.525f));
 
 
-    terrain = new Terrain(128, 10, glm::vec2(0,0));
+    terrain = new Terrain(100, 10, glm::vec2(0,0));
     water = new Water(16, 512);
     waterModel = glm::translate(waterModel, glm::vec3(0, 6, 0));
 
@@ -71,7 +71,7 @@ void Renderer::initialise()
     testCube.getShader()->setMatrix4("projection", projection);
     testCube.generateBuffers();
    
-    grassRenderer.initialise(glm::vec3(0.f), glm::vec2(1280, 1280), projection);
+    grassRenderer.initialise(glm::vec3(0.f), glm::vec2(1000, 1000), projection);
 
     std::vector<std::string> skyBoxFaces
     {

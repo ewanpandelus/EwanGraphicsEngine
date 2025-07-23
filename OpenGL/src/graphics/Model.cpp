@@ -6,6 +6,7 @@ void Model::prepareModel(const std::string& objFilepath, const char* textureFile
     loadOBJ(objFilepath);
     loadTexture(textureFilePath);
     createBuffers();
+    mesh.indexCount = static_cast<GLsizei>(mesh.indices.size()); // store index count
 }
 
 void  Model::loadOBJ(const std::string& filepath)
@@ -139,6 +140,16 @@ void Model::loadTexture(const char* filepath)
         std::cout << "Failed to load texture" << std::endl;
     }
     glGenTextures(1, &texture);
+}
+
+GLuint Model::getVAO() const
+{
+    return mesh.vao;
+}
+
+GLsizei Model::getIndexCount() const
+{
+    return mesh.indexCount;
 }
 
 void Model::bindTexture()
